@@ -1,0 +1,22 @@
+/** {*/
+    /*border: 1px solid black;*/
+/*}*/
+
+body {
+    font-family: Arial;
+}
+
+.width-wrapper {
+    max-width: 900px;
+    margin: auto;
+}
+
+section {
+    margin: 40px 0 40px 0;
+    background: #9ccdee;
+    padding: 10px 20px 10px 20px;
+    -webkit-box-shadow: inset -6px -6px 0px black;
+    -moz-box-shadow: inset -6px -6px 0px black;
+    box-shadow: inset -6px -6px 0px black;
+    border-radius: 4px;
+}

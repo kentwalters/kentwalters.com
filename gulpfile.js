@@ -18,6 +18,7 @@ function browserSyncReload(done) {
 
 function watchFiles() {
   gulp.watch("./*.html", browserSyncReload);
+  gulp.watch("./css/*.css", browserSyncReload);
 }
 
 function defaultTask(cb) {
@@ -27,4 +28,4 @@ function defaultTask(cb) {
 const watch = gulp.parallel(watchFiles, browserSync);
 
 exports.watch = watch;
-exports.default = defaultTask
+exports.default = defaultTask;
