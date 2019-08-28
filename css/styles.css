@@ -4,6 +4,7 @@
 
 body {
     font-family: Arial;
+    background-color: #fcfcfc;
 }
 
 .width-wrapper {
@@ -13,10 +14,48 @@ body {
 
 section {
     margin: 40px 0 40px 0;
-    background: #9ccdee;
+    background: #fcfcfc;
     padding: 10px 20px 10px 20px;
     -webkit-box-shadow: 6px 6px 0px black;
     -moz-box-shadow: 6px 6px 0px black;
     box-shadow: 6px 6px 0px black;
     border-radius: 2px;
+    border-color: #000;
+    border-style: solid;
+}
+
+#title-box {
+    border-right: black solid;
+    border-top: black solid;
+    margin-top: 50px;
+    border-radius: 2px;
+}
+
+#footer-box {
+    border-bottom: black solid;
+    border-left: black solid;
+    margin-bottom: 50px;
+    border-radius: 2px;
+    padding: 10px 20px 20px 20px;
+
+    /*box-shadow: -6px 6px 10px #fc4538;*/
+}
+
+#footer-box h2 {
+    margin-top: 0px;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+}
+
+a {
+    color: #fc4538;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: black underline;
 }
