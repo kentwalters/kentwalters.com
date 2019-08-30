@@ -4,7 +4,8 @@
 
 body {
     font-family: Arial;
-    background-color: #fcfcfc;
+    /*background-color: #fcfcfc;*/
+    background-color: #d4f0f2;
 }
 
 .width-wrapper {
@@ -20,7 +21,7 @@ section {
     -moz-box-shadow: 6px 6px 0px black;
     box-shadow: 6px 6px 0px black;
     border-radius: 2px;
-    border-color: #000;
+    border-color: black;
     border-style: solid;
 }
 
@@ -37,8 +38,6 @@ section {
     margin-bottom: 50px;
     border-radius: 2px;
     padding: 10px 20px 20px 20px;
-
-    /*box-shadow: -6px 6px 10px #fc4538;*/
 }
 
 #footer-box h2 {
@@ -58,4 +57,14 @@ a {
 
 a:hover {
     text-decoration: black underline;
+}
+
+@media only screen and (max-width: 600px) {
+    #title-box {
+        margin-top: 0px
+    }
+
+    section {
+        margin-right: 8px;
+    }
 }
