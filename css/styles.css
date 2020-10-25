@@ -68,3 +68,15 @@ a:hover {
         margin-right: 8px;
     }
 }
+
+.bottom-box {
+    position: absolute;
+    bottom: 100px;
+    right: 100px;
+}
+
+.middle-box {
+    
+    justify-content: center;
+    align-items: center;
+}
