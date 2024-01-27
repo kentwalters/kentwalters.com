@@ -46,7 +46,7 @@ a:hover {
   p {
     margin: 0px;
   }
-  h1, h2, label, p {
+  h1, h3, label, p {
       color: #c9ac88;
     }
   input {
@@ -65,7 +65,7 @@ a:hover {
   /* Linear Gradient for Light Effect */
   background-image: linear-gradient(to bottom left, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.2));
 }
-  h2 {
+  h3 {
     margin-top: 0px;
   }
 

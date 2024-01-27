@@ -5,6 +5,7 @@ const BALL_DIAMETER = 4;
 const BALL_RADIUS = BALL_DIAMETER / 2;
 const GRID_SIZE = 100; 
 let gravityEnabled = true; 
+let collisionsEnabled = true;
 let lastFrameTime = Date.now();
 let frameCount = 0;
 let fps = 0;
@@ -38,7 +39,7 @@ class Ball {
   }
 }
 
-function setupGrid() {
+const setupGrid = () => {
   grid = [];
   for (let i = 0; i < Math.ceil(canvas.width / GRID_SIZE); i++) {
     grid[i] = [];
@@ -67,6 +68,12 @@ const basicSetup = () => {
       gravityEnabled = event.target.checked;
     });
 
+  document
+    .getElementById("collisionToggle")
+    .addEventListener("change", (event) => {
+      collisionsEnabled = event.target.checked;
+    });
+
   window.addEventListener("resize", resizeCanvas);
 };
 
@@ -87,22 +94,6 @@ const addClickHandler = () => {
   });
 };
 
-const createBallHtmlElement = () => {
-  const ball = document.createElement("div");
-  ball.classList.add("ball");
-  const label = document.createElement("p");
-  label.innerText = "";
-  ball.appendChild(label);
-  label.classList.add("ball-label");
-  return ball;
-};
-
-const start = () => {
-  basicSetup();
-  setupGrid();
-  setInterval(tick, 1000 / FRAME_RATE);
-};
-
 const tick = () => {
   move();
   render();
@@ -120,7 +111,7 @@ const tick = () => {
   }
 };
 
-function applyGravity(ball, gravitationalConstant, timeStep) {
+const applyGravity = (ball, gravitationalConstant, timeStep) => {
   // The velocity in X remains the same, as gravity only affects the Y component
   const velocityX = ball.vector.velocity * Math.cos(ball.vector.direction);
 
@@ -137,7 +128,7 @@ function applyGravity(ball, gravitationalConstant, timeStep) {
   );
 }
 
-function detectCollision(ball1, ball2) {
+const detectCollision = (ball1, ball2) => {
   const dx = ball1.xPos - ball2.xPos;
   const dy = ball1.yPos - ball2.yPos;
   const distance = Math.sqrt(dx * dx + dy * dy);
@@ -145,7 +136,7 @@ function detectCollision(ball1, ball2) {
   return distance < BALL_DIAMETER; 
 }
 
-function handleCollision(ball1, ball2) {
+const handleCollision = (ball1, ball2) => {
   // Calculate the difference in position
   const dx = ball2.xPos - ball1.xPos;
   const dy = ball2.yPos - ball1.yPos;
@@ -217,18 +208,6 @@ const resizeCanvas = () => {
   canvas.height = window.innerHeight;
 };
 
-function rotateVelocity(vector, angle) {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const velocityX = vector.velocity * Math.cos(vector.direction);
-  const velocityY = vector.velocity * Math.sin(vector.direction);
-
-  return new Vector(
-    velocityX * cos - velocityY * sin,
-    velocityX * sin + velocityY * cos,
-  );
-}
-
 const move = () => {
   setupGrid();
   const seconds = 1 / FRAME_RATE;
@@ -267,23 +246,25 @@ const move = () => {
     object.xPos = x2;
     object.yPos = y2;
 
-    let gridX = Math.floor(object.xPos / GRID_SIZE);
-    let gridY = Math.floor(object.yPos / GRID_SIZE);
+    if (collisionsEnabled) {
+      let gridX = Math.floor(object.xPos / GRID_SIZE);
+      let gridY = Math.floor(object.yPos / GRID_SIZE);
 
-    if (gridX && gridY) grid[gridX][gridY].push(object);
+      if (gridX && gridY) grid[gridX][gridY].push(object);
 
-    // Check collisions in grid
-    for (let i = 0; i < grid.length; i++) {
-      for (let j = 0; j < grid[i].length; j++) {
-        let cell = grid[i][j];
-        for (let k = 0; k < cell.length; k++) {
-          for (let l = k + 1; l < cell.length; l++) {
-            if (detectCollision(cell[k], cell[l])) {
-              handleCollision(cell[k], cell[l]);
+      // Check collisions in grid
+      for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+          let cell = grid[i][j];
+          for (let k = 0; k < cell.length; k++) {
+            for (let l = k + 1; l < cell.length; l++) {
+              if (detectCollision(cell[k], cell[l])) {
+                handleCollision(cell[k], cell[l]);
+              }
             }
           }
         }
-      }
+      }  
     }
   }
 };
@@ -306,6 +287,12 @@ const render = () => {
 
   document.getElementById("obs-label").innerText =
     `Objects: ${universe.length}`;
+};
+
+const start = () => {
+  basicSetup();
+  setupGrid();
+  setInterval(tick, 1000 / FRAME_RATE);
 };
 
 start();
