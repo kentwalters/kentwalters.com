@@ -1,13 +1,9 @@
-
+* {
+    font-family: monospace;
+}
 
 body {
     background-color: #d4f0f2;
-}
-
-
-.icon {
-    width: 40px;
-    height: 40px;
 }
 
 a {
@@ -16,43 +12,37 @@ a {
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: black underline;
+#name {
+    position: absolute;
+    top: 18px;
+    left: 36px;
 }
 
-#name {
-        position: absolute;
-        top: 18px;
-        left: 36px;
-    }
-  #resetButton {
-    margin-top: 8px; 
-    padding: 4px;
-    background-color: #c9ac88;
-    border-radius: 4px;
 
-  }
-  * {
-    font-family: monospace;
-  }
-  body {
+body {
     margin: 0px;
-  }
-  #canvas {
+}
+
+#canvas {
     width: 100%;
     height: 100%;
     background-color: #211a10;
-  }
-  p {
-    margin: 0px;
-  }
-  h1, h3, label, p {
-      color: #c9ac88;
-    }
-  input {
+}
+
+p {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+h1, h3, label, p {
+  color: #c9ac88;
+}
+
+input {
     margin-left: 0px !important;
-  }
-  .ball {
+}
+
+.ball {
   width: var(--ball-diameter);
   height: var(--ball-diameter);
   border-radius: 50%;
@@ -65,20 +55,19 @@ a:hover {
   /* Linear Gradient for Light Effect */
   background-image: linear-gradient(to bottom left, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.2));
 }
-  h3 {
-    margin-top: 0px;
-  }
 
-  #control {
+h3 {
+    margin-bottom: 4px;
+    margin-top: 0px;
+    
+}
+
+#control {
     position: absolute;
     margin: 18px;
     padding:18px;
     bottom: 0px;
     right: 0px;
     background-color: #212410;
-  }
-  .ball-label {
-    font-family: monospace;
-    font-weight: bold;
-    font-size: 12pt;
-  }
+}
+
