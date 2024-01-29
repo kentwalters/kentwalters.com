@@ -3,8 +3,8 @@
 }
 
 :root {
-    --white: #EAEBED;
-    --red: #E83B21;
+    --white: #DFCEB0;
+    --red: #C22F04;
 }
 
 body {
@@ -85,7 +85,7 @@ h3 {
     padding:18px;
     top: 40%;
     right: 30%;
-    background-color: #B6BDC0;
+    background-color: #c2a76c;
     border: 2px solid black;
     width: 150px;
 }
