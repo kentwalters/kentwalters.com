@@ -125,7 +125,7 @@ const updateFPS = (deltaTime) => {
     fps = frameCount;
     frameCount = 0;
     lastFrameTime = now;
-    document.getElementById("fpsLabel").innerText = "FPS: " + fps;
+    document.getElementById("fps-number").innerText = fps;
   }
 };
 
@@ -292,14 +292,14 @@ const render = () => {
       0,
       Math.PI * 2
     );
-    ctx.fillStyle = "#cb475b"; // Ball color
+    ctx.fillStyle = "#E83B21"; // Ball color
     ctx.fill();
     ctx.closePath();
   }
 
   document.getElementById(
-    "obs-label"
-  ).innerText = `Objects: ${universe.length}`;
+    "obs-number"
+  ).innerText = `${universe.length}`;
 };
 
 const start = () => {

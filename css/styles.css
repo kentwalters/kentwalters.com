@@ -1,21 +1,38 @@
 * {
-    font-family: monospace;
+    font-family: "JetBrains Mono", monospace;
+}
+
+:root {
+    --white: #EAEBED;
+    --red: #E83B21;
 }
 
 body {
-    background-color: #d4f0f2;
+    background-color: var(--white);
 }
 
 a {
-    color: #fc4538;
+    color: var(--red);
     font-weight: bold;
     text-decoration: none;
 }
 
 #name {
     position: absolute;
-    top: 18px;
-    left: 36px;
+    top: 40%;
+    left: 30%;
+    
+}
+
+#name h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+    font-family: 'Nanum Myeongjo', serif;
+}
+
+#name p {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 20px;
 }
 
 
@@ -26,7 +43,7 @@ body {
 #canvas {
     width: 100%;
     height: 100%;
-    background-color: #211a10;
+    background-color: var(--white);
 }
 
 p {
@@ -35,7 +52,7 @@ p {
 }
 
 h1, h3, label, p {
-  color: #c9ac88;
+  color: black;
 }
 
 input {
@@ -66,8 +83,24 @@ h3 {
     position: absolute;
     margin: 18px;
     padding:18px;
-    bottom: 0px;
-    right: 0px;
-    background-color: #212410;
+    top: 40%;
+    right: 30%;
+    background-color: #B6BDC0;
+    border: 2px solid black;
+    width: 150px;
 }
 
+.control-item {
+    text-transform: uppercase;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.settings {
+    padding-top: 10px;
+}
+
+label {
+    display: block;
+}

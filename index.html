@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="favicon.png" />
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="canvasContainer">
@@ -13,24 +16,32 @@
       <div id="name">
         <h1>Kent Walters</h1>
         <p>
-          Right now I work at
+          I work on Product & Design at
           <a href="https://retool.com/" target="_blank">Retool</a> in San
           Francisco.
         </p>
       </div>
 
       <div id="control">
-        <h3 id="obs-label">Objects:</h3>
-        <p id="fpsLabel">FPS:</p>
+        <p class="control-item" id="obs-label">
+          <span class="control-title">Objects</span>
+          <span class="control-number" id="obs-number"></span>
+        </p>
+        <p class="control-item" id="fpsLabel">
+          <span class="control-title">FPS</span>
+          <span class="control-number" id="fps-number"></span>
+        </p>
 
-        <label>
-          <input type="checkbox" id="gravityToggle" checked />
-          Gravity
-        </label>
-        <label>
-          <input type="checkbox" id="collisionToggle" checked />
-          Collisions
-        </label>
+        <div class="settings">
+          <label>
+            <input type="checkbox" id="gravityToggle" checked />
+            Gravity
+          </label>
+          <label>
+            <input type="checkbox" id="collisionToggle" checked />
+            Collisions
+          </label>
+        </div>
       </div>
     </div>
   </body>
