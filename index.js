@@ -4,6 +4,7 @@ const ELASTIC_COLLISIONS = true;
 const BALL_DIAMETER = 4;
 const BALL_RADIUS = BALL_DIAMETER / 2;
 const GRID_SIZE = 100;
+const BALL_COLORS = ["#E83B21", "#00B04C", "#CCD833"];
 let gravityEnabled = true;
 let collisionsEnabled = true;
 let lastFrameTime = Date.now();
@@ -29,12 +30,14 @@ class Ball {
   yPos;
   mass;
   vector;
+  color;
 
-  constructor(x, y, m, v, e) {
+  constructor(x, y, m, v, c) {
     this.xPos = x;
     this.yPos = y;
     this.mass = m;
     this.vector = v;
+    this.color = c;
   }
 }
 
@@ -88,19 +91,26 @@ const basicSetup = () => {
 };
 
 const addClickHandler = () => {
+  let currentColorIndex = 0;  // Keep track of the current color index
+
   canvas.addEventListener("click", (e) => {
     const NUM_BALLS = 100; // Number of balls to create
     const RADIUS = 200; // Radius of the circle of balls
+
+    const clickColor = BALL_COLORS[currentColorIndex];  // Use a single color for this click
 
     for (let i = 0; i < NUM_BALLS; i++) {
       const angle = (i / NUM_BALLS) * Math.PI * 2; // Divide the circle into 100 parts
       const x = e.clientX + RADIUS * Math.cos(angle) - BALL_RADIUS;
       const y = e.clientY + RADIUS * Math.sin(angle) - BALL_RADIUS;
 
-      // Create a new Ball object
-      const newBallObject = new Ball(x, y, 100, new Vector(0, 0));
+      // Create a new Ball object with the color for this click
+      const newBallObject = new Ball(x, y, 100, new Vector(0, 0), clickColor);
       universe.push(newBallObject);
     }
+
+    // Increment the color index for the next click
+    currentColorIndex = (currentColorIndex + 1) % BALL_COLORS.length;
   });
 };
 
@@ -292,7 +302,7 @@ const render = () => {
       0,
       Math.PI * 2
     );
-    ctx.fillStyle = "#E83B21"; // Ball color
+    ctx.fillStyle = ob.color; // Ball color
     ctx.fill();
     ctx.closePath();
   }
