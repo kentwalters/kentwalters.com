@@ -1,10 +1,10 @@
 const COLLISION_ENERGY_LOSS = 0.15;
 const FRAME_RATE = 100;
 const ELASTIC_COLLISIONS = true;
-const BALL_DIAMETER = 4; 
+const BALL_DIAMETER = 4;
 const BALL_RADIUS = BALL_DIAMETER / 2;
-const GRID_SIZE = 100; 
-let gravityEnabled = true; 
+const GRID_SIZE = 100;
+let gravityEnabled = true;
 let collisionsEnabled = true;
 let lastFrameTime = Date.now();
 let frameCount = 0;
@@ -12,6 +12,7 @@ let fps = 0;
 let canvas, ctx;
 let grid = [];
 const universe = [];
+let lastUpdateTime = 0;
 
 class Vector {
   velocity;
@@ -28,14 +29,12 @@ class Ball {
   yPos;
   mass;
   vector;
-  htmlElement;
 
   constructor(x, y, m, v, e) {
     this.xPos = x;
     this.yPos = y;
     this.mass = m;
     this.vector = v;
-    this.htmlElement = e;
   }
 }
 
@@ -47,34 +46,45 @@ const setupGrid = () => {
       grid[i][j] = [];
     }
   }
-}
+};
 
-const basicSetup = () => {
+const initializeCanvas = () => {
   canvas = document.getElementById("canvas");
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   ctx = canvas.getContext("2d");
-  
+};
+
+const configureDOMElements = () => {
   document.documentElement.style.setProperty(
     "--ball-diameter",
-    `${BALL_DIAMETER}px`,
+    `${BALL_DIAMETER}px`
   );
-  
-  addClickHandler();
+  setupEventListeners();
+};
 
+const setupEventListeners = () => {
   document
     .getElementById("gravityToggle")
-    .addEventListener("change", (event) => {
-      gravityEnabled = event.target.checked;
-    });
-
+    .addEventListener("change", handleGravityToggle);
   document
     .getElementById("collisionToggle")
-    .addEventListener("change", (event) => {
-      collisionsEnabled = event.target.checked;
-    });
-
+    .addEventListener("change", handleCollisionToggle);
   window.addEventListener("resize", resizeCanvas);
+};
+
+const handleGravityToggle = (event) => {
+  gravityEnabled = event.target.checked;
+};
+
+const handleCollisionToggle = (event) => {
+  collisionsEnabled = event.target.checked;
+};
+
+const basicSetup = () => {
+  initializeCanvas();
+  configureDOMElements();
+  addClickHandler();
 };
 
 const addClickHandler = () => {
@@ -94,16 +104,24 @@ const addClickHandler = () => {
   });
 };
 
-const tick = () => {
-  move();
+const tick = (timestamp) => {
+  if (!lastUpdateTime) lastUpdateTime = timestamp;
+  const deltaTime = timestamp - lastUpdateTime;
+  lastUpdateTime = timestamp;
+
+  move(deltaTime);
   render();
+  updateFPS(deltaTime);
+
+  window.requestAnimationFrame(tick);
+};
+
+const updateFPS = (deltaTime) => {
   frameCount++;
-
   const now = Date.now();
-  const delta = now - lastFrameTime;
+  const elapsed = now - lastFrameTime;
 
-  if (delta >= 1000) {
-    // Update FPS every second
+  if (elapsed >= 1000) {
     fps = frameCount;
     frameCount = 0;
     lastFrameTime = now;
@@ -124,17 +142,17 @@ const applyGravity = (ball, gravitationalConstant, timeStep) => {
   // Update the ball's velocity vector with the new values
   ball.vector = new Vector(
     Math.sqrt(velocityX ** 2 + velocityY ** 2),
-    Math.atan2(velocityY, velocityX),
+    Math.atan2(velocityY, velocityX)
   );
-}
+};
 
 const detectCollision = (ball1, ball2) => {
   const dx = ball1.xPos - ball2.xPos;
   const dy = ball1.yPos - ball2.yPos;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
-  return distance < BALL_DIAMETER; 
-}
+  return distance < BALL_DIAMETER;
+};
 
 const handleCollision = (ball1, ball2) => {
   // Calculate the difference in position
@@ -180,13 +198,13 @@ const handleCollision = (ball1, ball2) => {
   ball1.vector.velocity = Math.sqrt(m1 * m1 + dpTan1 * dpTan1);
   ball1.vector.direction = Math.atan2(
     m1 * ny + dpTan1 * ty,
-    m1 * nx + dpTan1 * tx,
+    m1 * nx + dpTan1 * tx
   );
 
   ball2.vector.velocity = Math.sqrt(m2 * m2 + dpTan2 * dpTan2);
   ball2.vector.direction = Math.atan2(
     m2 * ny + dpTan2 * ty,
-    m2 * nx + dpTan2 * tx,
+    m2 * nx + dpTan2 * tx
   );
 
   // Separate the balls slightly to avoid sticking
@@ -201,16 +219,16 @@ const handleCollision = (ball1, ball2) => {
     ball2.xPos += overlap * nx;
     ball2.yPos += overlap * ny;
   }
-}
+};
 
 const resizeCanvas = () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 };
 
-const move = () => {
+const move = (deltaTime) => {
   setupGrid();
-  const seconds = 1 / FRAME_RATE;
+  const seconds = deltaTime / 1000; 
 
   for (let object of universe) {
     if (gravityEnabled) {
@@ -218,34 +236,28 @@ const move = () => {
       applyGravity(object, gravitationalConstant, seconds);
     }
 
+    // Calculate new position based on velocity and direction
     const distance = object.vector.velocity * seconds;
-    let x2 = object.xPos + distance * Math.cos(object.vector.direction);
-    let y2 = object.yPos + distance * Math.sin(object.vector.direction);
+    let newX = object.xPos + distance * Math.cos(object.vector.direction);
+    let newY = object.yPos + distance * Math.sin(object.vector.direction);
 
-    // Check for wall collisions
-    const rightEdge = x2 >= canvas.width - BALL_DIAMETER;
-    const leftEdge = x2 <= 0;
-    const topEdge = y2 <= 0;
-    const bottomEdge = y2 >= canvas.height - BALL_DIAMETER;
-
-    if (rightEdge || leftEdge) {
-      object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS; // Reduce velocity
+    // Wall collision detection and response
+    if (newX < 0 || newX > canvas.width - BALL_DIAMETER) {
       object.vector.direction = Math.PI - object.vector.direction;
-      // Adjust ball position to stay within canvas
-      x2 = rightEdge ? canvas.width - BALL_DIAMETER : leftEdge ? 0 : x2;
+      object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS;
+      newX = Math.max(0, Math.min(newX, canvas.width - BALL_DIAMETER)); // Constrain within bounds
     }
-
-    if (topEdge || bottomEdge) {
-      object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS; // Reduce velocity
+    if (newY < 0 || newY > canvas.height - BALL_DIAMETER) {
       object.vector.direction = -object.vector.direction;
-      // Adjust ball position to stay within canvas
-      y2 = bottomEdge ? canvas.height - BALL_DIAMETER : topEdge ? 0 : y2;
+      object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS;
+      newY = Math.max(0, Math.min(newY, canvas.height - BALL_DIAMETER)); // Constrain within bounds
     }
 
-    // Assign new position to object
-    object.xPos = x2;
-    object.yPos = y2;
+    // Update ball position
+    object.xPos = newX;
+    object.yPos = newY;
 
+    // Update grid and check collisions
     if (collisionsEnabled) {
       let gridX = Math.floor(object.xPos / GRID_SIZE);
       let gridY = Math.floor(object.yPos / GRID_SIZE);
@@ -264,7 +276,7 @@ const move = () => {
             }
           }
         }
-      }  
+      }
     }
   }
 };
@@ -278,21 +290,22 @@ const render = () => {
       ob.yPos + BALL_RADIUS,
       BALL_RADIUS,
       0,
-      Math.PI * 2,
+      Math.PI * 2
     );
     ctx.fillStyle = "#cb475b"; // Ball color
     ctx.fill();
     ctx.closePath();
   }
 
-  document.getElementById("obs-label").innerText =
-    `Objects: ${universe.length}`;
+  document.getElementById(
+    "obs-label"
+  ).innerText = `Objects: ${universe.length}`;
 };
 
 const start = () => {
   basicSetup();
   setupGrid();
-  setInterval(tick, 1000 / FRAME_RATE);
+  window.requestAnimationFrame(tick);
 };
 
 start();
