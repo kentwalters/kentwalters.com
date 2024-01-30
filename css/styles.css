@@ -17,18 +17,19 @@ a {
     text-decoration: none;
 }
 
-/* #name {
+#name {
     position: absolute;
     top: 40%;
-    left: 30%;
-    
-} */
+    left: 20%;
+    pointer-events: none;
+}
 
 #name h1 {
     font-size: 42px;
     margin-bottom: 10px;
     font-family: 'Nanum Myeongjo', serif;
     margin-top: 10px;
+    
 }
 
 #name p {
@@ -36,18 +37,8 @@ a {
     font-size: 20px;
 }
 
-.content {
-    display: flex;
-    justify-content: center; /* Aligns children horizontally in the center */
-    align-items: center; /* Aligns children vertically in the center */
-    position: absolute;
-    top:40%;
-    left: 20%
-}
 
-#name, #control {
-    margin: 0 20px; /* Adds spacing between the divs */
-}
+
 
 
 body {
@@ -94,14 +85,15 @@ h3 {
 }
 
 #control {
-    /* position: absolute; */
+    position: absolute;
     margin: 18px;
     padding:18px;
-    top: 40%;
-    right: 30%;
+    bottom: 0%;
+    right: 0%;
     background-color: #c2a76c;
-    border: 2px solid black;
+    border: 2px solid #4d422b;
     width: 150px;
+    border-radius: 0px 0px 8px 0px;
 }
 
 .control-item {

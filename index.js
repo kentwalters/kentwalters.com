@@ -68,6 +68,11 @@ const configureDOMElements = () => {
   setupEventListeners();
 };
 
+const updateControlDivBounds = () => {
+  const controlDiv = document.getElementById("control");
+  controlDivBounds = controlDiv.getBoundingClientRect();
+};
+
 const setupEventListeners = () => {
   document
     .getElementById("gravityToggle")
@@ -89,6 +94,7 @@ const handleCollisionToggle = (event) => {
 const basicSetup = () => {
   initializeCanvas();
   configureDOMElements();
+  updateControlDivBounds();
   addClickHandler();
 };
 
@@ -261,6 +267,7 @@ const handleCollision = (ball1, ball2) => {
 const resizeCanvas = () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  updateControlDivBounds();
 };
 
 const move = (deltaTime) => {
@@ -289,6 +296,15 @@ const move = (deltaTime) => {
       object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS;
       newY = Math.max(0, Math.min(newY, canvas.height - BALL_DIAMETER)); // Constrain within bounds
     }
+
+    // if (object.xPos < controlDivBounds.left || object.xPos > controlDivBounds.right - BALL_DIAMETER) {
+    //   object.vector.direction = Math.PI - object.vector.direction;
+    //   object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS;
+    // }
+    // if (object.yPos < controlDivBounds.top || object.yPos > controlDivBounds.bottom - BALL_DIAMETER) {
+    //   object.vector.direction = -object.vector.direction;
+    //   object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS;
+    // }
 
     // Update ball position
     object.xPos = newX;
