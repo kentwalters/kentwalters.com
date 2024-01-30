@@ -14,6 +14,8 @@ let canvas, ctx;
 let grid = [];
 const universe = [];
 let lastUpdateTime = 0;
+let circle = true;
+let currentColorIndex = 0;
 
 class Vector {
   velocity;
@@ -91,11 +93,18 @@ const basicSetup = () => {
 };
 
 const addClickHandler = () => {
-  let currentColorIndex = 0;  // Keep track of the current color index
-
   canvas.addEventListener("click", (e) => {
-    const NUM_BALLS = 100; // Number of balls to create
-    const RADIUS = 200; // Radius of the circle of balls
+    placeCircleOrSquare(e)
+  });
+};
+
+const placeCircleOrSquare = (e) => {
+  
+  
+  if (circle) {
+    const options = [40, 80, 120];
+    const NUM_BALLS = 40; // Number of balls to create
+    const RADIUS = 100; // Radius of the circle of balls
 
     const clickColor = BALL_COLORS[currentColorIndex];  // Use a single color for this click
 
@@ -108,11 +117,29 @@ const addClickHandler = () => {
       const newBallObject = new Ball(x, y, 100, new Vector(0, 0), clickColor);
       universe.push(newBallObject);
     }
+    
+    }  else {
+      const gridSize =  Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+      const spacing = 10; // Spacing between balls
 
-    // Increment the color index for the next click
+      const clickColor = BALL_COLORS[currentColorIndex];
+
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          // Calculate position for each ball in the grid
+          const x = e.clientX + i * (BALL_DIAMETER + spacing);
+          const y = e.clientY + j * (BALL_DIAMETER + spacing);
+
+          const newBallObject = new Ball(x, y, 100, new Vector(0, 0), clickColor);
+          universe.push(newBallObject);
+        }
+      }
+    }
+    circle = !circle
     currentColorIndex = (currentColorIndex + 1) % BALL_COLORS.length;
-  });
-};
+}
+
+
 
 const tick = (timestamp) => {
   if (!lastUpdateTime) lastUpdateTime = timestamp;

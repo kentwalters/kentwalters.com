@@ -17,22 +17,36 @@ a {
     text-decoration: none;
 }
 
-#name {
+/* #name {
     position: absolute;
     top: 40%;
     left: 30%;
     
-}
+} */
 
 #name h1 {
     font-size: 42px;
     margin-bottom: 10px;
     font-family: 'Nanum Myeongjo', serif;
+    margin-top: 10px;
 }
 
 #name p {
     font-family: 'Nanum Myeongjo', serif;
     font-size: 20px;
+}
+
+.content {
+    display: flex;
+    justify-content: center; /* Aligns children horizontally in the center */
+    align-items: center; /* Aligns children vertically in the center */
+    position: absolute;
+    top:40%;
+    left: 20%
+}
+
+#name, #control {
+    margin: 0 20px; /* Adds spacing between the divs */
 }
 
 
@@ -80,7 +94,7 @@ h3 {
 }
 
 #control {
-    position: absolute;
+    /* position: absolute; */
     margin: 18px;
     padding:18px;
     top: 40%;
