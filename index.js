@@ -100,19 +100,17 @@ const basicSetup = () => {
 
 const addClickHandler = () => {
   canvas.addEventListener("click", (e) => {
-    placeCircleOrSquare(e)
+    placeCircleOrSquare(e);
   });
 };
 
 const placeCircleOrSquare = (e) => {
-  
-  
   if (circle) {
     const options = [40, 80, 120];
     const NUM_BALLS = 40; // Number of balls to create
     const RADIUS = 100; // Radius of the circle of balls
 
-    const clickColor = BALL_COLORS[currentColorIndex];  // Use a single color for this click
+    const clickColor = BALL_COLORS[currentColorIndex]; // Use a single color for this click
 
     for (let i = 0; i < NUM_BALLS; i++) {
       const angle = (i / NUM_BALLS) * Math.PI * 2; // Divide the circle into 100 parts
@@ -123,29 +121,26 @@ const placeCircleOrSquare = (e) => {
       const newBallObject = new Ball(x, y, 100, new Vector(0, 0), clickColor);
       universe.push(newBallObject);
     }
-    
-    }  else {
-      const gridSize =  Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-      const spacing = 10; // Spacing between balls
+  } else {
+    const gridSize = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+    const spacing = 10; // Spacing between balls
 
-      const clickColor = BALL_COLORS[currentColorIndex];
+    const clickColor = BALL_COLORS[currentColorIndex];
 
-      for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-          // Calculate position for each ball in the grid
-          const x = e.clientX + i * (BALL_DIAMETER + spacing);
-          const y = e.clientY + j * (BALL_DIAMETER + spacing);
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        // Calculate position for each ball in the grid
+        const x = e.clientX + i * (BALL_DIAMETER + spacing);
+        const y = e.clientY + j * (BALL_DIAMETER + spacing);
 
-          const newBallObject = new Ball(x, y, 100, new Vector(0, 0), clickColor);
-          universe.push(newBallObject);
-        }
+        const newBallObject = new Ball(x, y, 100, new Vector(0, 0), clickColor);
+        universe.push(newBallObject);
       }
     }
-    circle = !circle
-    currentColorIndex = (currentColorIndex + 1) % BALL_COLORS.length;
-}
-
-
+  }
+  circle = !circle;
+  currentColorIndex = (currentColorIndex + 1) % BALL_COLORS.length;
+};
 
 const tick = (timestamp) => {
   if (!lastUpdateTime) lastUpdateTime = timestamp;
@@ -272,7 +267,7 @@ const resizeCanvas = () => {
 
 const move = (deltaTime) => {
   setupGrid();
-  const seconds = deltaTime / 1000; 
+  const seconds = deltaTime / 1000;
 
   for (let object of universe) {
     if (gravityEnabled) {
@@ -350,9 +345,7 @@ const render = () => {
     ctx.closePath();
   }
 
-  document.getElementById(
-    "obs-number"
-  ).innerText = `${universe.length}`;
+  document.getElementById("obs-number").innerText = `${universe.length}`;
 };
 
 const start = () => {
@@ -362,3 +355,15 @@ const start = () => {
 };
 
 start();
+
+// non physics stuff
+const phys = document.getElementById("canvas");
+const link = document.getElementById("link");
+
+link.addEventListener("mouseenter", () => {
+  phys.style.pointerEvents = "none"; // Use 'phys' instead of 'canvas'
+});
+
+link.addEventListener("mouseleave", () => {
+  phys.style.pointerEvents = "auto"; // Use 'phys' instead of 'canvas'
+});

@@ -1,67 +1,66 @@
 * {
-    font-family: "JetBrains Mono", monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
 :root {
-    --white: #DFCEB0;
-    --red: #C22F04;
+  --white: #fdfcfd;
+  --red: #c22f04;
 }
 
 body {
-    background-color: var(--white);
+  background-color: var(--white);
 }
 
 a {
-    color: var(--red);
-    font-weight: bold;
-    text-decoration: none;
+  color: var(--red);
+  font-weight: bold;
+  text-decoration: none;
 }
 
 #name {
-    position: absolute;
-    top: 40%;
-    left: 20%;
-    pointer-events: none;
+  position: absolute;
+  top: 40%;
+  left: 20%;
+  pointer-events: none;
 }
 
 #name h1 {
-    font-size: 42px;
-    margin-bottom: 10px;
-    font-family: 'Nanum Myeongjo', serif;
-    margin-top: 10px;
-    
+  font-size: 36px;
+  margin-bottom: 10px;
+  font-family: "Nanum Myeongjo", serif;
+  margin-top: 10px;
 }
 
-#name p {
-    font-family: 'Nanum Myeongjo', serif;
-    font-size: 20px;
+#name p,
+a {
+  font-family: "Nanum Myeongjo", serif;
+  font-size: 20px;
 }
-
-
-
-
 
 body {
-    margin: 0px;
+  margin: 0px;
 }
 
 #canvas {
-    width: 100%;
-    height: 100%;
-    background-color: var(--white);
+  width: 100%;
+  height: 100%;
+  background-color: var(--white);
 }
 
 p {
-    margin-top: 2px;
-    margin-bottom: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
-h1, h3, label, p {
+h1,
+h3,
+label,
+p {
   color: black;
 }
 
 input {
-    margin-left: 0px !important;
+  margin-left: 0px !important;
 }
 
 .ball {
@@ -75,38 +74,45 @@ input {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
 
   /* Linear Gradient for Light Effect */
-  background-image: linear-gradient(to bottom left, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.2));
+  background-image: linear-gradient(
+    to bottom left,
+    rgba(255, 255, 255, 0.3),
+    rgba(0, 0, 0, 0.2)
+  );
 }
 
 h3 {
-    margin-bottom: 4px;
-    margin-top: 0px;
-    
+  margin-bottom: 4px;
+  margin-top: 0px;
 }
 
 #control {
-    position: absolute;
-    margin: 18px;
-    padding:18px;
-    bottom: 0%;
-    right: 0%;
-    background-color: #c2a76c;
-    border: 2px solid #4d422b;
-    width: 150px;
-    border-radius: 0px 0px 8px 0px;
+  position: absolute;
+  margin: 18px;
+  padding: 18px;
+  bottom: 0%;
+  right: 0%;
+  background-color: #d7ccb5;
+  border: 2px solid #8c8982;
+  width: 150px;
+  border-radius: 0px 0px 8px 0px;
 }
 
 .control-item {
-    text-transform: uppercase;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
 }
 
 .settings {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 label {
-    display: block;
+  display: block;
+}
+
+#name a {
+  pointer-events: auto; /* Add this to allow link interaction */
 }
