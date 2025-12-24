@@ -5,6 +5,9 @@
 :root {
   --white: #fdfcfd;
   --red: #c22f04;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 32px;
 }
 
 body {
@@ -20,8 +23,17 @@ a {
 #name {
   position: absolute;
   top: 15%;
-  left: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  max-width: 800px;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  #name {
+    width: 90%;
+  }
 }
 
 #name h1 {
@@ -32,6 +44,7 @@ a {
 }
 
 #name p,
+#name li,
 a {
   font-family: "Nanum Myeongjo", serif;
   font-size: 20px;
@@ -47,7 +60,16 @@ body {
   background-color: var(--white);
 }
 
-p {
+#name p {
+  margin-top: var(--space-md);
+  margin-bottom: 0;
+}
+
+#name p:first-of-type {
+  margin-top: 0;
+}
+
+#control p {
   margin-top: 2px;
   margin-bottom: 2px;
 }
@@ -121,6 +143,30 @@ label {
 
 input[type="checkbox"] {
   accent-color: black;
+}
+
+.projects-heading {
+  margin-top: var(--space-lg);
+}
+
+.contact {
+  margin-top: var(--space-lg);
+}
+
+#name ul {
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+#name li {
+  margin-bottom: var(--space-sm);
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  margin-left: 0.15em;
 }
 
 #name a {
