@@ -19,7 +19,7 @@ a {
 
 #name {
   position: absolute;
-  top: 40%;
+  top: 15%;
   left: 20%;
   pointer-events: none;
 }
@@ -88,14 +88,16 @@ h3 {
 
 #control {
   position: absolute;
-  margin: 18px;
-  padding: 18px;
+  margin: 8px;
+  padding: 4px 6px;
   bottom: 0%;
   right: 0%;
   background-color: #d7ccb5;
-  border: 2px solid #8c8982;
-  width: 150px;
+  border: 1px solid #938c7d;
+  width: 130px;
   border-radius: 0px 0px 8px 0px;
+  font-size: 12px;
+  
 }
 
 .control-item {
@@ -103,14 +105,22 @@ h3 {
   font-weight: bold;
   display: flex;
   justify-content: space-between;
+  
 }
 
-.settings {
-  padding-top: 10px;
+hr {
+  border: none;
+  border-top: 1px solid #938c7d;
+  margin: 8px 0;
 }
+
 
 label {
   display: block;
+}
+
+input[type="checkbox"] {
+  accent-color: black;
 }
 
 #name a {

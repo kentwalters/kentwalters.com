@@ -73,6 +73,8 @@ const updateControlDivBounds = () => {
   controlDivBounds = controlDiv.getBoundingClientRect();
 };
 
+let controlHovered = false;
+
 const setupEventListeners = () => {
   document
     .getElementById("gravityToggle")
@@ -81,6 +83,17 @@ const setupEventListeners = () => {
     .getElementById("collisionToggle")
     .addEventListener("change", handleCollisionToggle);
   window.addEventListener("resize", resizeCanvas);
+  
+  document.getElementById("control").addEventListener("mouseenter", () => {
+    if (!controlHovered) {
+      // controlHovered = true;
+      const fakeEvent = {
+        clientX: Math.random() * canvas.width,
+        clientY: Math.random() * canvas.height
+      };
+      placeCircleOrSquare(fakeEvent);
+    }
+  });
 };
 
 const handleGravityToggle = (event) => {
