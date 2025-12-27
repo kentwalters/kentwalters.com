@@ -53,6 +53,14 @@ const setupGrid = () => {
   }
 };
 
+const clearGrid = () => {
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[i].length; j++) {
+      grid[i][j].length = 0;
+    }
+  }
+};
+
 const initializeCanvas = () => {
   canvas = document.getElementById("canvas");
   canvas.width = window.innerWidth;
@@ -276,10 +284,11 @@ const resizeCanvas = () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   updateControlDivBounds();
+  setupGrid();
 };
 
 const move = (deltaTime) => {
-  setupGrid();
+  clearGrid();
   const seconds = deltaTime / 1000;
 
   for (let object of universe) {
