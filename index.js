@@ -323,7 +323,9 @@ const move = (deltaTime) => {
       let gridX = Math.floor(object.xPos / GRID_SIZE);
       let gridY = Math.floor(object.yPos / GRID_SIZE);
 
-      if (gridX && gridY) grid[gridX][gridY].push(object);
+      if (gridX >= 0 && gridY >= 0 && gridX < grid.length && gridY < grid[gridX].length) {
+        grid[gridX][gridY].push(object);
+      }
 
       // Check collisions in grid
       for (let i = 0; i < grid.length; i++) {
