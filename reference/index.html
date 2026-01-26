@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Claude API Reference</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../favicon.png" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Nanum+Myeongjo:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        padding: 40px 20px;
+      }
+      .content {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .content h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        font-family: "Nanum Myeongjo", serif;
+        margin-top: 10px;
+      }
+      .content h2 {
+        font-size: 24px;
+        font-family: "Nanum Myeongjo", serif;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+      }
+      .content h3 {
+        font-size: 18px;
+        font-family: "Nanum Myeongjo", serif;
+        margin-top: 24px;
+        margin-bottom: 12px;
+      }
+      .content p,
+      .content li {
+        font-family: "Nanum Myeongjo", serif;
+        font-size: 18px;
+        line-height: 1.6;
+      }
+      .content p {
+        margin: 16px 0;
+      }
+      .content ul, .content ol {
+        margin: 16px 0;
+        padding-left: 24px;
+      }
+      .content li {
+        margin-bottom: 8px;
+      }
+      pre {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 16px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+      code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+      }
+      p code, li code, td code {
+        background-color: #f5f5f5;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 15px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+        font-size: 16px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 10px 12px;
+        text-align: left;
+        font-family: "Nanum Myeongjo", serif;
+      }
+      th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 32px 0;
+      }
+      .back-link {
+        margin-bottom: 24px;
+        display: block;
+      }
+      .subtitle {
+        color: #666;
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <a href="../" class="back-link">&larr; Back</a>
+
+      <h1>Anthropic Claude API Cheat Sheet</h1>
+      <p class="subtitle">A consolidated reference for building agents with Claude.</p>
+
+      <hr>
+
+      <h2>1. Tool Definition</h2>
+      <pre><code>TOOLS = [
+    {
+        "name": "tool_name",
+        "description": "What this tool does",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "param_name": {
+                    "type": "string",  # string, number, boolean, array, object
+                    "description": "What this param is"
+                }
+            },
+            "required": ["param_name"]
+        }
+    }
+]</code></pre>
+
+      <hr>
+
+      <h2>2. API Call</h2>
+      <pre><code>response = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    system="System prompt here",
+    tools=TOOLS,
+    messages=messages,
+)</code></pre>
+
+      <hr>
+
+      <h2>3. Response Object</h2>
+      <pre><code>response.stop_reason  # "end_turn" | "tool_use" | "max_tokens" | "stop_sequence"
+response.content      # list of content blocks (TextBlock and/or ToolUseBlock)</code></pre>
+
+      <h3>Content Block Types</h3>
+      <p><strong>TextBlock:</strong></p>
+      <pre><code>block.type  # "text"
+block.text  # "Here's the weather..."</code></pre>
+
+      <p><strong>ToolUseBlock:</strong></p>
+      <pre><code>block.type   # "tool_use"
+block.id     # "toolu_abc123" (you need this for tool_result)
+block.name   # "get_weather"
+block.input  # {"location": "San Francisco, CA"}</code></pre>
+
+      <hr>
+
+      <h2>4. Stop Reasons</h2>
+      <table>
+        <tr>
+          <th>Stop Reason</th>
+          <th>Meaning</th>
+          <th>What to Do</th>
+        </tr>
+        <tr>
+          <td><code>end_turn</code></td>
+          <td>Model finished responding</td>
+          <td>Return the text, exit loop</td>
+        </tr>
+        <tr>
+          <td><code>tool_use</code></td>
+          <td>Model wants to call tool(s)</td>
+          <td>Execute tools, send results back</td>
+        </tr>
+        <tr>
+          <td><code>max_tokens</code></td>
+          <td>Hit token limit</td>
+          <td>Response truncated, may need to continue</td>
+        </tr>
+        <tr>
+          <td><code>stop_sequence</code></td>
+          <td>Hit custom stop sequence</td>
+          <td>Handle as needed</td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <h2>5. Message Shapes</h2>
+
+      <h3>User Message</h3>
+      <pre><code>{"role": "user", "content": "What's the weather?"}</code></pre>
+
+      <h3>Assistant Message (add to history)</h3>
+      <pre><code>{"role": "assistant", "content": response.content}</code></pre>
+
+      <h3>Tool Result (send back to API)</h3>
+      <pre><code>{
+    "role": "user",
+    "content": [
+        {
+            "type": "tool_result",
+            "tool_use_id": block.id,  # Must match the tool_use block's id
+            "content": "65F and sunny"
+        }
+    ]
+}</code></pre>
+
+      <h3>Tool Result with Error</h3>
+      <pre><code>{
+    "type": "tool_result",
+    "tool_use_id": block.id,
+    "content": "Error: Location not found",
+    "is_error": True
+}</code></pre>
+
+      <hr>
+
+      <h2>6. Basic Agent Loop Pattern</h2>
+      <pre><code>def run_agent(user_message: str) -> str:
+    messages = [{"role": "user", "content": user_message}]
+
+    while True:
+        response = client.messages.create(
+            model=MODEL,
+            max_tokens=1024,
+            system="You are a helpful assistant.",
+            tools=TOOLS,
+            messages=messages,
+        )
+
+        # Always add assistant response to history
+        messages.append({"role": "assistant", "content": response.content})
+
+        # Done - return text
+        if response.stop_reason == "end_turn":
+            for block in response.content:
+                if block.type == "text":
+                    return block.text
+            return ""
+
+        # Tool use - process and continue
+        if response.stop_reason == "tool_use":
+            tool_results = process_tool_calls(response)
+            messages.append({"role": "user", "content": tool_results})</code></pre>
+
+      <hr>
+
+      <h2>7. Common Mistakes</h2>
+      <table>
+        <tr>
+          <th>Mistake</th>
+          <th>Fix</th>
+        </tr>
+        <tr>
+          <td><code>messages.append(response.content)</code></td>
+          <td><code>messages.append({"role": "assistant", "content": response.content})</code></td>
+        </tr>
+        <tr>
+          <td><code>"tool_result_id"</code></td>
+          <td><code>"tool_use_id"</code></td>
+        </tr>
+        <tr>
+          <td><code>response.content[0].name</code> without checking type</td>
+          <td>Loop through blocks, check <code>block.type == "tool_use"</code></td>
+        </tr>
+        <tr>
+          <td><code>"type": "sting"</code></td>
+          <td><code>"type": "string"</code></td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <h2>8. Checking Block Types</h2>
+      <pre><code># Safe way to extract text
+for block in response.content:
+    if block.type == "text":
+        print(block.text)
+    elif block.type == "tool_use":
+        print(f"Tool call: {block.name}({block.input})")
+
+# Or using hasattr
+for block in response.content:
+    if hasattr(block, "text"):
+        return block.text</code></pre>
+
+      <hr>
+
+      <h2>9. Tool Choice Options</h2>
+      <table>
+        <tr>
+          <th>Option</th>
+          <th>Behavior</th>
+        </tr>
+        <tr>
+          <td><code>auto</code></td>
+          <td>Claude chooses to call tools or not</td>
+        </tr>
+        <tr>
+          <td><code>any</code></td>
+          <td>Must use one tool</td>
+        </tr>
+        <tr>
+          <td><code>tool</code></td>
+          <td>Must use tool specified</td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <h2>10. Prompt Engineering Principles</h2>
+      <table>
+        <tr>
+          <th>Principle</th>
+          <th>Why It Matters</th>
+        </tr>
+        <tr>
+          <td><strong>Be explicit</strong></td>
+          <td>Claude 4.x follows instructions precisely&mdash;vague prompts get vague results</td>
+        </tr>
+        <tr>
+          <td><strong>Add context</strong></td>
+          <td>Explain <em>why</em> you want something, not just <em>what</em></td>
+        </tr>
+        <tr>
+          <td><strong>Use XML tags</strong></td>
+          <td>Structure helps Claude parse complex instructions</td>
+        </tr>
+        <tr>
+          <td><strong>Give examples</strong></td>
+          <td>Few-shot prompting dramatically improves consistency</td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <h2>11. Prompt Structure Template</h2>
+      <pre><code>You are a [ROLE] who [CONTEXT/PURPOSE].
+
+&lt;tools&gt;
+- tool_name: what it does and when to use it
+- another_tool: purpose and triggers
+&lt;/tools&gt;
+
+&lt;guidelines&gt;
+- Instruction with reason (e.g., "Be concise&mdash;users need quick answers")
+- Another instruction with context
+- What to do in edge cases
+&lt;/guidelines&gt;
+
+&lt;examples&gt;
+User: [example input]
+Assistant: [example output showing desired behavior]
+&lt;/examples&gt;</code></pre>
+
+      <hr>
+
+      <h2>12. Quick Tips</h2>
+
+      <h3>Do</h3>
+      <ul>
+        <li><strong>Specific roles</strong>: "Senior data analyst at a Fortune 500 company" &gt; "analyst"</li>
+        <li><strong>Explain why</strong>: "Never guess&mdash;incorrect data could impact business decisions"</li>
+        <li><strong>Show formats</strong>: Include example outputs for structured responses</li>
+        <li><strong>Handle ambiguity</strong>: Tell Claude when to ask for clarification vs. proceed</li>
+      </ul>
+
+      <h3>Don't</h3>
+      <ul>
+        <li>Use vague instructions: "be helpful" (too generic)</li>
+        <li>Skip context: "be concise" (why? for whom?)</li>
+        <li>Write walls of text without structure</li>
+        <li>Assume Claude knows your preferences</li>
+      </ul>
+
+      <hr>
+
+      <h2>13. XML Tags Reference</h2>
+      <table>
+        <tr>
+          <th>Tag</th>
+          <th>Use For</th>
+        </tr>
+        <tr>
+          <td><code>&lt;role&gt;</code></td>
+          <td>Identity and expertise</td>
+        </tr>
+        <tr>
+          <td><code>&lt;context&gt;</code></td>
+          <td>Background information</td>
+        </tr>
+        <tr>
+          <td><code>&lt;tools&gt;</code></td>
+          <td>Available tools and when to use them</td>
+        </tr>
+        <tr>
+          <td><code>&lt;guidelines&gt;</code></td>
+          <td>Behavioral rules</td>
+        </tr>
+        <tr>
+          <td><code>&lt;constraints&gt;</code></td>
+          <td>Hard limits and boundaries</td>
+        </tr>
+        <tr>
+          <td><code>&lt;examples&gt;</code></td>
+          <td>Input/output demonstrations</td>
+        </tr>
+        <tr>
+          <td><code>&lt;output_format&gt;</code></td>
+          <td>Response structure requirements</td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <h2>14. Example: Research Agent</h2>
+      <pre><code>You are a research assistant helping users answer business questions.
+
+&lt;tools&gt;
+- lookup_employee: Find employee info. Use when users ask about people.
+- get_sales_data: Quarterly metrics. Use for revenue/performance questions.
+- save_to_scratchpad: Store key findings for follow-up questions.
+&lt;/tools&gt;
+
+&lt;guidelines&gt;
+- Be concise&mdash;users need quick answers during research sessions
+- Cite your source: "According to lookup_employee, Alice earns..."
+- Ask for clarification when multiple matches exist
+- Save important findings to scratchpad for multi-turn conversations
+&lt;/guidelines&gt;
+
+&lt;example&gt;
+User: "What's Alice's salary?"
+Assistant: "I found two employees named Alice. Could you specify:
+- Alice Johnson (Engineering)
+- Alice Chen (Marketing)"
+&lt;/example&gt;</code></pre>
+
+      <hr>
+
+      <h2>15. Claude 4.x Specific Notes</h2>
+      <ul>
+        <li><strong>More literal</strong>: Follows instructions exactly&mdash;be precise</li>
+        <li><strong>Less verbose</strong>: May skip summaries unless asked</li>
+        <li><strong>Tool-aware</strong>: Explicitly mention when to use which tools</li>
+        <li><strong>Steerable</strong>: Responds well to direct guidance</li>
+      </ul>
+
+      <hr>
+
+      <h2>16. Testing Your Prompt</h2>
+      <ol>
+        <li>Does it define a clear role?</li>
+        <li>Does it explain <em>why</em> for key instructions?</li>
+        <li>Are edge cases handled?</li>
+        <li>Is there at least one example?</li>
+        <li>Would a stranger understand what you want?</li>
+      </ol>
+
+      <hr>
+
+      <h2>17. Best Practices for Tool Definitions</h2>
+      <p><strong>Provide extremely detailed descriptions.</strong> This is by far the most important factor in tool performance. Your descriptions should explain every detail about the tool, including:</p>
+      <ul>
+        <li>What the tool does</li>
+        <li>When it should be used (and when it shouldn't)</li>
+        <li>What each parameter means and how it affects the tool's behavior</li>
+        <li>Any important caveats or limitations, such as what information the tool does not return if the tool name is unclear</li>
+      </ul>
+      <p>The more context you can give Claude about your tools, the better it will be at deciding when and how to use them. <strong>Aim for at least 3-4 sentences per tool description</strong>, more if the tool is complex.</p>
+
+      <hr>
+
+      <h2>18. Compaction Prompt (for long conversations)</h2>
+      <pre><code>const compactionPrompt = `Summarize this conversation concisely for context continuity.
+PRESERVE:
+- The user's original request/goal
+- All tool call results with their exact values
+- Key decisions made
+- Current progress and what remains to be done
+- Any errors encountered
+OMIT:
+- Redundant reasoning or explanations
+- Failed approaches (unless relevant to avoid repeating)
+- Verbose tool call metadata
+&lt;conversation&gt;
+${JSON.stringify(messages, null, 2)}
+&lt;/conversation&gt;
+Return a concise summary (under 300 words) that would allow the conversation to continue seamlessly.`;</code></pre>
+
+      <hr>
+
+      <h2>19. Model Strings</h2>
+      <table>
+        <tr>
+          <th>Model</th>
+          <th>String</th>
+        </tr>
+        <tr>
+          <td>Claude Opus 4.5</td>
+          <td><code>claude-opus-4-5-20251101</code></td>
+        </tr>
+        <tr>
+          <td>Claude Sonnet 4.5</td>
+          <td><code>claude-sonnet-4-5-20250929</code></td>
+        </tr>
+        <tr>
+          <td>Claude Haiku 4.5</td>
+          <td><code>claude-haiku-4-5-20251001</code></td>
+        </tr>
+        <tr>
+          <td>Claude Sonnet 4</td>
+          <td><code>claude-sonnet-4-20250514</code></td>
+        </tr>
+        <tr>
+          <td>Claude Opus 4</td>
+          <td><code>claude-opus-4-20250514</code></td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <p><em>Sources: Anthropic Claude API Reference, Anthropic Prompt Engineering Docs</em></p>
+
+    </div>
+  </body>
+</html>
