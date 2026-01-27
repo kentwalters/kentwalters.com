@@ -185,6 +185,35 @@ for block in response.content:
 | `any` | Must use one tool |
 | `tool` | Must use tool specified |
 
+```python
+# Auto (default) - Claude decides whether to use tools
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    tools=TOOLS,
+    tool_choice={"type": "auto"},
+    messages=messages,
+)
+
+# Any - Claude must use at least one tool
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    tools=TOOLS,
+    tool_choice={"type": "any"},
+    messages=messages,
+)
+
+# Tool - Claude must use the specified tool
+response = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    tools=TOOLS,
+    tool_choice={"type": "tool", "name": "get_weather"},
+    messages=messages,
+)
+```
+
 ---
 
 ## 10. Prompt Engineering Principles
