@@ -348,7 +348,56 @@ Return a concise summary (under 300 words) that would allow the conversation to 
 
 ---
 
-## 20. TypeScript Quick Reference
+## 20. Streaming
+
+### Basic Streaming (Python)
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+with client.messages.stream(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello"}],
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+```
+
+### Basic Streaming (TypeScript)
+```typescript
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic();
+
+await client.messages
+  .stream({
+    model: "claude-sonnet-4-5",
+    max_tokens: 1024,
+    messages: [{ role: "user", content: "Hello" }],
+  })
+  .on("text", (text) => {
+    process.stdout.write(text);
+  });
+```
+
+### Stream Event Flow
+1. `message_start` — empty message shell
+2. `content_block_start` → `content_block_delta` (repeated) → `content_block_stop`
+3. `message_delta` — final stop_reason and usage
+4. `message_stop`
+
+### Delta Types
+| Delta Type | Content |
+|------------|---------|
+| `text_delta` | `delta.text` — streamed text chunk |
+| `input_json_delta` | `delta.partial_json` — tool input (accumulate, parse at end) |
+| `thinking_delta` | `delta.thinking` — extended thinking content |
+
+---
+
+## 21. TypeScript Quick Reference
 
 ### Switch Statement
 ```typescript

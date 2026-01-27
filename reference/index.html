@@ -529,7 +529,67 @@ Return a concise summary (under 300 words) that would allow the conversation to 
 
       <hr>
 
-      <h2>20. TypeScript Quick Reference</h2>
+      <h2>20. Streaming</h2>
+
+      <h3>Basic Streaming (Python)</h3>
+      <pre><code>import anthropic
+
+client = anthropic.Anthropic()
+
+with client.messages.stream(
+    model="claude-sonnet-4-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello"}],
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)</code></pre>
+
+      <h3>Basic Streaming (TypeScript)</h3>
+      <pre><code>import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic();
+
+await client.messages
+  .stream({
+    model: "claude-sonnet-4-5",
+    max_tokens: 1024,
+    messages: [{ role: "user", content: "Hello" }],
+  })
+  .on("text", (text) =&gt; {
+    process.stdout.write(text);
+  });</code></pre>
+
+      <h3>Stream Event Flow</h3>
+      <ol>
+        <li><code>message_start</code> &mdash; empty message shell</li>
+        <li><code>content_block_start</code> &rarr; <code>content_block_delta</code> (repeated) &rarr; <code>content_block_stop</code></li>
+        <li><code>message_delta</code> &mdash; final stop_reason and usage</li>
+        <li><code>message_stop</code></li>
+      </ol>
+
+      <h3>Delta Types</h3>
+      <table>
+        <tr>
+          <th>Delta Type</th>
+          <th>Content</th>
+        </tr>
+        <tr>
+          <td><code>text_delta</code></td>
+          <td><code>delta.text</code> &mdash; streamed text chunk</td>
+        </tr>
+        <tr>
+          <td><code>input_json_delta</code></td>
+          <td><code>delta.partial_json</code> &mdash; tool input (accumulate, parse at end)</td>
+        </tr>
+        <tr>
+          <td><code>thinking_delta</code></td>
+          <td><code>delta.thinking</code> &mdash; extended thinking content</td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <h2>21. TypeScript Quick Reference</h2>
 
       <h3>Switch Statement</h3>
       <pre><code>switch (response.stop_reason) {
