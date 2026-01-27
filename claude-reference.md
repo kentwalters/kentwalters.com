@@ -448,4 +448,23 @@ const toolInput: Record<string, unknown> = {
 
 ---
 
+## 22. Parallel Tool Execution (TypeScript)
+
+```typescript
+const toolResultBlocks = await Promise.all(
+  response.content
+    .filter((block) => block.type === "tool_use")
+    .map(async (block) => {
+      const result = await this.callSingleTool(block.name, block.input);
+      return {
+        type: "tool_result" as const,
+        tool_use_id: block.id,
+        content: result,
+      };
+    })
+);
+```
+
+---
+
 _Sources: Anthropic Claude API Reference, Anthropic Prompt Engineering Docs_
