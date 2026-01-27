@@ -120,8 +120,6 @@
       <h1>Anthropic Claude API Cheat Sheet</h1>
       <p class="subtitle">A consolidated reference for building agents with Claude.</p>
 
-      <hr>
-
       <h2>1. Tool Definition</h2>
       <pre><code>TOOLS = [
     {
@@ -140,8 +138,6 @@
     }
 ]</code></pre>
 
-      <hr>
-
       <h2>2. API Call</h2>
       <pre><code>response = client.messages.create(
     model="claude-sonnet-4-5",
@@ -150,8 +146,6 @@
     tools=TOOLS,
     messages=messages,
 )</code></pre>
-
-      <hr>
 
       <h2>3. Response Object</h2>
       <pre><code>response.stop_reason  # "end_turn" | "tool_use" | "max_tokens" | "stop_sequence"
@@ -167,8 +161,6 @@ block.text  # "Here's the weather..."</code></pre>
 block.id     # "toolu_abc123" (you need this for tool_result)
 block.name   # "get_weather"
 block.input  # {"location": "San Francisco, CA"}</code></pre>
-
-      <hr>
 
       <h2>4. Stop Reasons</h2>
       <table>
@@ -199,8 +191,6 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
         </tr>
       </table>
 
-      <hr>
-
       <h2>5. Message Shapes</h2>
 
       <h3>User Message</h3>
@@ -228,8 +218,6 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
     "content": "Error: Location not found",
     "is_error": True
 }</code></pre>
-
-      <hr>
 
       <h2>6. Basic Agent Loop Pattern</h2>
       <pre><code>def run_agent(user_message: str) -> str:
@@ -259,8 +247,6 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
             tool_results = process_tool_calls(response)
             messages.append({"role": "user", "content": tool_results})</code></pre>
 
-      <hr>
-
       <h2>7. Common Mistakes</h2>
       <table>
         <tr>
@@ -285,8 +271,6 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
         </tr>
       </table>
 
-      <hr>
-
       <h2>8. Checking Block Types</h2>
       <pre><code># Safe way to extract text
 for block in response.content:
@@ -299,8 +283,6 @@ for block in response.content:
 for block in response.content:
     if hasattr(block, "text"):
         return block.text</code></pre>
-
-      <hr>
 
       <h2>9. Tool Choice Options</h2>
       <table>
@@ -321,8 +303,6 @@ for block in response.content:
           <td>Must use tool specified</td>
         </tr>
       </table>
-
-      <hr>
 
       <h2>10. Prompt Engineering Principles</h2>
       <table>
@@ -348,8 +328,6 @@ for block in response.content:
         </tr>
       </table>
 
-      <hr>
-
       <h2>11. Prompt Structure Template</h2>
       <pre><code>You are a [ROLE] who [CONTEXT/PURPOSE].
 
@@ -369,8 +347,6 @@ User: [example input]
 Assistant: [example output showing desired behavior]
 &lt;/examples&gt;</code></pre>
 
-      <hr>
-
       <h2>12. Quick Tips</h2>
 
       <h3>Do</h3>
@@ -388,8 +364,6 @@ Assistant: [example output showing desired behavior]
         <li>Write walls of text without structure</li>
         <li>Assume Claude knows your preferences</li>
       </ul>
-
-      <hr>
 
       <h2>13. XML Tags Reference</h2>
       <table>
@@ -427,8 +401,6 @@ Assistant: [example output showing desired behavior]
         </tr>
       </table>
 
-      <hr>
-
       <h2>14. Example: Research Agent</h2>
       <pre><code>You are a research assistant helping users answer business questions.
 
@@ -452,8 +424,6 @@ Assistant: "I found two employees named Alice. Could you specify:
 - Alice Chen (Marketing)"
 &lt;/example&gt;</code></pre>
 
-      <hr>
-
       <h2>15. Claude 4.x Specific Notes</h2>
       <ul>
         <li><strong>More literal</strong>: Follows instructions exactly&mdash;be precise</li>
@@ -461,8 +431,6 @@ Assistant: "I found two employees named Alice. Could you specify:
         <li><strong>Tool-aware</strong>: Explicitly mention when to use which tools</li>
         <li><strong>Steerable</strong>: Responds well to direct guidance</li>
       </ul>
-
-      <hr>
 
       <h2>16. Testing Your Prompt</h2>
       <ol>
@@ -473,8 +441,6 @@ Assistant: "I found two employees named Alice. Could you specify:
         <li>Would a stranger understand what you want?</li>
       </ol>
 
-      <hr>
-
       <h2>17. Best Practices for Tool Definitions</h2>
       <p><strong>Provide extremely detailed descriptions.</strong> This is by far the most important factor in tool performance. Your descriptions should explain every detail about the tool, including:</p>
       <ul>
@@ -484,8 +450,6 @@ Assistant: "I found two employees named Alice. Could you specify:
         <li>Any important caveats or limitations, such as what information the tool does not return if the tool name is unclear</li>
       </ul>
       <p>The more context you can give Claude about your tools, the better it will be at deciding when and how to use them. <strong>Aim for at least 3-4 sentences per tool description</strong>, more if the tool is complex.</p>
-
-      <hr>
 
       <h2>18. Compaction Prompt (for long conversations)</h2>
       <pre><code>const compactionPrompt = `Summarize this conversation concisely for context continuity.
@@ -503,8 +467,6 @@ OMIT:
 ${JSON.stringify(messages, null, 2)}
 &lt;/conversation&gt;
 Return a concise summary (under 300 words) that would allow the conversation to continue seamlessly.`;</code></pre>
-
-      <hr>
 
       <h2>19. Model Strings</h2>
       <table>
@@ -533,8 +495,6 @@ Return a concise summary (under 300 words) that would allow the conversation to 
           <td><code>claude-opus-4-20250514</code></td>
         </tr>
       </table>
-
-      <hr>
 
       <h2>20. Streaming</h2>
 
@@ -608,8 +568,6 @@ stream.on("text", (text) =&gt; process.stdout.write(text));
 const message = await stream.finalMessage();  // Full Message object
 console.log(message.usage);</code></pre>
 
-      <hr>
-
       <h2>21. TypeScript Quick Reference</h2>
 
       <h3>Switch Statement</h3>
@@ -639,8 +597,6 @@ const toolInput: Record&lt;string, unknown&gt; = {
   includeExtended: true,
 };</code></pre>
 
-      <hr>
-
       <h2>22. Parallel Tool Execution (TypeScript)</h2>
       <pre><code>const toolResultBlocks = await Promise.all(
   response.content
@@ -654,8 +610,6 @@ const toolInput: Record&lt;string, unknown&gt; = {
       };
     })
 );</code></pre>
-
-      <hr>
 
       <p class="sources">Sources: Anthropic Claude API Reference, Anthropic Prompt Engineering Docs</p>
 
