@@ -12,6 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Nanum+Myeongjo:wght@400;700;800&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" />
     <style>
       body {
         padding: 40px 20px;
@@ -121,7 +122,7 @@
       <p class="subtitle">A consolidated reference for building agents with Claude.</p>
 
       <h2>1. Tool Definition</h2>
-      <pre><code>TOOLS = [
+      <pre><code class="language-python">TOOLS = [
     {
         "name": "tool_name",
         "description": "What this tool does",
@@ -139,7 +140,7 @@
 ]</code></pre>
 
       <h2>2. API Call</h2>
-      <pre><code>response = client.messages.create(
+      <pre><code class="language-python">response = client.messages.create(
     model="claude-sonnet-4-5",
     max_tokens=1024,
     system="System prompt here",
@@ -148,16 +149,16 @@
 )</code></pre>
 
       <h2>3. Response Object</h2>
-      <pre><code>response.stop_reason  # "end_turn" | "tool_use" | "max_tokens" | "stop_sequence"
+      <pre><code class="language-python">response.stop_reason  # "end_turn" | "tool_use" | "max_tokens" | "stop_sequence"
 response.content      # list of content blocks (TextBlock and/or ToolUseBlock)</code></pre>
 
       <h3>Content Block Types</h3>
       <p><strong>TextBlock:</strong></p>
-      <pre><code>block.type  # "text"
+      <pre><code class="language-python">block.type  # "text"
 block.text  # "Here's the weather..."</code></pre>
 
       <p><strong>ToolUseBlock:</strong></p>
-      <pre><code>block.type   # "tool_use"
+      <pre><code class="language-python">block.type   # "tool_use"
 block.id     # "toolu_abc123" (you need this for tool_result)
 block.name   # "get_weather"
 block.input  # {"location": "San Francisco, CA"}</code></pre>
@@ -194,13 +195,13 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
       <h2>5. Message Shapes</h2>
 
       <h3>User Message</h3>
-      <pre><code>{"role": "user", "content": "What's the weather?"}</code></pre>
+      <pre><code class="language-python">{"role": "user", "content": "What's the weather?"}</code></pre>
 
       <h3>Assistant Message (add to history)</h3>
-      <pre><code>{"role": "assistant", "content": response.content}</code></pre>
+      <pre><code class="language-python">{"role": "assistant", "content": response.content}</code></pre>
 
       <h3>Tool Result (send back to API)</h3>
-      <pre><code>{
+      <pre><code class="language-python">{
     "role": "user",
     "content": [
         {
@@ -212,7 +213,7 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
 }</code></pre>
 
       <h3>Tool Result with Error</h3>
-      <pre><code>{
+      <pre><code class="language-python">{
     "type": "tool_result",
     "tool_use_id": block.id,
     "content": "Error: Location not found",
@@ -220,7 +221,7 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
 }</code></pre>
 
       <h2>6. Basic Agent Loop Pattern</h2>
-      <pre><code>def run_agent(user_message: str) -> str:
+      <pre><code class="language-python">def run_agent(user_message: str) -> str:
     messages = [{"role": "user", "content": user_message}]
 
     while True:
@@ -272,7 +273,7 @@ block.input  # {"location": "San Francisco, CA"}</code></pre>
       </table>
 
       <h2>8. Checking Block Types</h2>
-      <pre><code># Safe way to extract text
+      <pre><code class="language-python"># Safe way to extract text
 for block in response.content:
     if block.type == "text":
         print(block.text)
@@ -452,7 +453,7 @@ Assistant: "I found two employees named Alice. Could you specify:
       <p>The more context you can give Claude about your tools, the better it will be at deciding when and how to use them. <strong>Aim for at least 3-4 sentences per tool description</strong>, more if the tool is complex.</p>
 
       <h2>18. Compaction Prompt (for long conversations)</h2>
-      <pre><code>const compactionPrompt = `Summarize this conversation concisely for context continuity.
+      <pre><code class="language-javascript">const compactionPrompt = `Summarize this conversation concisely for context continuity.
 PRESERVE:
 - The user's original request/goal
 - All tool call results with their exact values
@@ -499,7 +500,7 @@ Return a concise summary (under 300 words) that would allow the conversation to 
       <h2>20. Streaming</h2>
 
       <h3>Basic Streaming (Python)</h3>
-      <pre><code>import anthropic
+      <pre><code class="language-python">import anthropic
 
 client = anthropic.Anthropic()
 
@@ -512,7 +513,7 @@ with client.messages.stream(
         print(text, end="", flush=True)</code></pre>
 
       <h3>Basic Streaming (TypeScript)</h3>
-      <pre><code>import Anthropic from "@anthropic-ai/sdk";
+      <pre><code class="language-typescript">import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
@@ -555,14 +556,14 @@ await client.messages
       </table>
 
       <h3>Getting the Final Message</h3>
-      <pre><code># Python
+      <pre><code class="language-python"># Python
 with client.messages.stream(...) as stream:
     for text in stream.text_stream:
         print(text, end="", flush=True)
     message = stream.get_final_message()  # Full Message object
     print(message.usage)  # {"input_tokens": 25, "output_tokens": 15}</code></pre>
 
-      <pre><code>// TypeScript
+      <pre><code class="language-typescript">// TypeScript
 const stream = client.messages.stream({...});
 stream.on("text", (text) =&gt; process.stdout.write(text));
 const message = await stream.finalMessage();  // Full Message object
@@ -571,7 +572,7 @@ console.log(message.usage);</code></pre>
       <h2>21. TypeScript Quick Reference</h2>
 
       <h3>Switch Statement</h3>
-      <pre><code>switch (response.stop_reason) {
+      <pre><code class="language-typescript">switch (response.stop_reason) {
   case "end_turn":
     return extractText(response);
   case "tool_use":
@@ -585,7 +586,7 @@ console.log(message.usage);</code></pre>
 }</code></pre>
 
       <h3>Record Type (string keys, unknown values)</h3>
-      <pre><code>type GenericRecord = Record&lt;string, unknown&gt;;
+      <pre><code class="language-typescript">type GenericRecord = Record&lt;string, unknown&gt;;
 
 // Equivalent to:
 type GenericRecord = { [key: string]: unknown };
@@ -598,7 +599,7 @@ const toolInput: Record&lt;string, unknown&gt; = {
 };</code></pre>
 
       <h2>22. Parallel Tool Execution (TypeScript)</h2>
-      <pre><code>const toolResultBlocks = await Promise.all(
+      <pre><code class="language-typescript">const toolResultBlocks = await Promise.all(
   response.content
     .filter((block) =&gt; block.type === "tool_use")
     .map(async (block) =&gt; {
@@ -614,5 +615,9 @@ const toolInput: Record&lt;string, unknown&gt; = {
       <p class="sources">Sources: Anthropic Claude API Reference, Anthropic Prompt Engineering Docs</p>
 
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
   </body>
 </html>
