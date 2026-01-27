@@ -529,6 +529,37 @@ Return a concise summary (under 300 words) that would allow the conversation to 
 
       <hr>
 
+      <h2>20. TypeScript Quick Reference</h2>
+
+      <h3>Switch Statement</h3>
+      <pre><code>switch (response.stop_reason) {
+  case "end_turn":
+    return extractText(response);
+  case "tool_use":
+    const results = processToolCalls(response);
+    messages.push({ role: "user", content: results });
+    break;
+  case "max_tokens":
+    throw new Error("Response truncated");
+  default:
+    throw new Error(`Unknown stop reason: ${response.stop_reason}`);
+}</code></pre>
+
+      <h3>Record Type (string keys, unknown values)</h3>
+      <pre><code>type GenericRecord = Record&lt;string, unknown&gt;;
+
+// Equivalent to:
+type GenericRecord = { [key: string]: unknown };
+
+// Usage
+const toolInput: Record&lt;string, unknown&gt; = {
+  location: "San Francisco",
+  units: "fahrenheit",
+  includeExtended: true,
+};</code></pre>
+
+      <hr>
+
       <p><em>Sources: Anthropic Claude API Reference, Anthropic Prompt Engineering Docs</em></p>
 
     </div>
