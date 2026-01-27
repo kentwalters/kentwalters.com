@@ -395,6 +395,22 @@ await client.messages
 | `input_json_delta` | `delta.partial_json` — tool input (accumulate, parse at end) |
 | `thinking_delta` | `delta.thinking` — extended thinking content |
 
+### Getting the Final Message
+```python
+with client.messages.stream(...) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+    message = stream.get_final_message()  # Full Message object
+    print(message.usage)  # {"input_tokens": 25, "output_tokens": 15}
+```
+
+```typescript
+const stream = client.messages.stream({...});
+stream.on("text", (text) => process.stdout.write(text));
+const message = await stream.finalMessage();  // Full Message object
+console.log(message.usage);
+```
+
 ---
 
 ## 21. TypeScript Quick Reference
