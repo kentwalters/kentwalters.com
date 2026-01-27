@@ -1,4 +1,4 @@
-# Anthropic Claude API Cheat Sheet
+# Anthropic Claude API Reference
 
 A consolidated reference for building agents with Claude.
 
