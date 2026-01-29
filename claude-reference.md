@@ -64,6 +64,8 @@ block.name   # "get_weather"
 block.input  # {"location": "San Francisco, CA"}
 ```
 
+> **Tip:** Use `tool_use.model_dump_json()` to serialize a ToolUseBlock to JSON (useful for logging or storage).
+
 ---
 
 ## 4. Stop Reasons
