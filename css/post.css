@@ -22,7 +22,7 @@ body {
   font-family: "Nanum Myeongjo", serif;
   font-size: 36px;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 6px;
 }
 
 .post h2 {
@@ -30,6 +30,14 @@ body {
   font-size: 24px;
   margin-top: var(--space-lg);
   margin-bottom: var(--space-sm);
+}
+
+.post-date {
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 13px !important;
+  color: #aaa;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .post p {
