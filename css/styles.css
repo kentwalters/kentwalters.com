@@ -104,8 +104,10 @@ input {
 }
 
 h3 {
+  font-family: "Nanum Myeongjo", serif;
+  font-size: 22px;
   margin-bottom: 4px;
-  margin-top: 0px;
+  margin-top: var(--space-lg);
 }
 
 #control {

@@ -1,0 +1,99 @@
+body {
+  background-color: var(--white);
+  margin: 0;
+  padding: var(--space-lg) var(--space-md);
+}
+
+.post {
+  max-width: 700px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: var(--space-lg);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.post h1 {
+  font-family: "Nanum Myeongjo", serif;
+  font-size: 36px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.post h2 {
+  font-family: "Nanum Myeongjo", serif;
+  font-size: 24px;
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-sm);
+}
+
+.post p {
+  font-family: "Nanum Myeongjo", serif;
+  font-size: 20px;
+  line-height: 1.6;
+  margin-top: var(--space-md);
+  margin-bottom: 0;
+}
+
+.post ul {
+  margin-top: 4px;
+  padding-left: 24px;
+}
+
+.post li {
+  font-family: "Nanum Myeongjo", serif;
+  font-size: 20px;
+  line-height: 1.6;
+  margin-top: 0;
+  margin-bottom: 3px;
+}
+
+.post em,
+.post strong {
+  font-family: "Nanum Myeongjo", serif;
+}
+
+.post a {
+  color: var(--red);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.diagram {
+  width: 100%;
+  margin: var(--space-lg) 0;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.diagram svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram-caption {
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 12px !important;
+  color: #aaa;
+  margin-top: -16px !important;
+  margin-bottom: 0 !important;
+  text-align: center;
+}
+
+.diagram-tooltip {
+  position: absolute;
+  background: rgba(0,0,0,0.75);
+  color: white;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s;
+}

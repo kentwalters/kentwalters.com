@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8" />
+    <title>The Seasons are Wrong</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../favicon.png" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/post.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Nanum+Myeongjo:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <article class="post">
+      <a href="../index.html" class="back-link">← Back</a>
+      <h1>The Seasons are Wrong</h1>
+
+      <p>It is with deep regret that I must shatter long held illusions about the structure of our world. The seasons don't make sense. Our calendar is wrong. The things you believe to be summer, winter, spring, and fall are not as they seem. The "first day" of any season, the most broken concept of all, has misled untold billions.</p>
+
+      <p>Here's the calendar you're familiar with if you're from North America:</p>
+      <ul>
+        <li>Summer Solstice (start of summer): June 21</li>
+        <li>Fall Equinox (start of fall): September 23</li>
+        <li>Winter Solstice (start of winter): December 21</li>
+        <li>Spring Equinox (start of spring): March 21</li>
+      </ul>
+
+      <p>Let's look at these dates in relation to the length of day:</p>
+
+      <div class="diagram" id="diagram1-container">
+        <div class="diagram-tooltip" id="tooltip1"></div>
+      </div>
+
+      <p>Summer solstice — the <em>first day</em> of <strong>summer</strong> is the point at 
+        which the days start getting shorter. Try to reconcile that. Summer, the season that, if I may speak for all of us, we identify with the hottest part of the
+         year and the longest days, starts when the days get shorter? This is a conspiracy. It is equally senseless for all the other seasons. 
+         The first day of winter is when the days start getting longer. You might think that sounds more like the first day of spring, but you would be wrong.</p>
+
+      <p>Here are what the seasons look like in relation to day length:</p>
+
+      <div class="diagram" id="diagram2-container">
+        <div class="diagram-tooltip" id="tooltip2"></div>
+      </div>
+
+      <p>This feels wrong. Culturally, summer and winter should represent opposite extremes, while spring and fall should represent the transitions between them. Applying this opinion to the diagram above, summer should represent the period under the curve with the maximum area, and winter with the minimum area.</p>
+
+      <p>If we do this, we'll get a new calendar. Instead of summer starting on the summer solstice, summer will start halfway between the spring equinox and the summer solstice (~May 7). This puts summer solstice in the middle of the summer, instead of the start of summer.</p>
+
+      <p>Here are the full dates of my new proposed calendar:</p>
+      <ul>
+        <li>Summer starts: May 7</li>
+        <li>Fall starts: August 9</li>
+        <li>Winter starts: November 6</li>
+        <li>Spring starts: February 21</li>
+      </ul>
+
+      <div class="diagram" id="diagram3-container">
+        <div class="diagram-tooltip" id="tooltip3"></div>
+      </div>
+      <p class="diagram-caption">The proposed calendar — solstice and equinox centered in each season</p>
+
+      <h2>Addendum</h2>
+      <p>I've been freaking out about this for the better part of ten years, and originally wrote this in 2018. Only recently did I have it explained to me by an LLM that this is mostly a North American tradition, and much of Europe, Iran, the ancient Romans (among many others) have a rich history of considering the summer solstice the middle of summer. Which makes a lot of sense.</p>
+      
+    </article>
+
+    <script>
+      // --- Shared config ---
+      const VW = 700;
+      const VH = 300;
+      const M = { top: 58, right: 56, bottom: 44, left: 46 };
+      const W = VW - M.left - M.right;
+      const H = VH - M.top - M.bottom;
+
+      const DAYS = 365;
+      const MIN_H = 8.5;
+      const MAX_H = 15.5;
+
+      function dayLen(d) {
+        return 12 + 3 * Math.sin(2 * Math.PI * (d - 80) / 365);
+      }
+
+      function xS(d) { return M.left + (d / (DAYS - 1)) * W; }
+      function yS(h) { return M.top + H - ((h - MIN_H) / (MAX_H - MIN_H)) * H; }
+
+      const keyDates = [
+        { day: 79,  label: "Spring Equinox", date: "Mar 21" },
+        { day: 171, label: "Summer Solstice", date: "Jun 21" },
+        { day: 265, label: "Fall Equinox",   date: "Sep 23" },
+        { day: 354, label: "Winter Solstice", date: "Dec 21" },
+      ];
+
+      const months = [
+        { name: "Jan", start: 0 },
+        { name: "Feb", start: 31 },
+        { name: "Mar", start: 59 },
+        { name: "Apr", start: 90 },
+        { name: "May", start: 120 },
+        { name: "Jun", start: 151 },
+        { name: "Jul", start: 181 },
+        { name: "Aug", start: 212 },
+        { name: "Sep", start: 243 },
+        { name: "Oct", start: 273 },
+        { name: "Nov", start: 304 },
+        { name: "Dec", start: 334 },
+      ];
+
+      function wavePath(d0, d1) {
+        let p = "";
+        for (let d = d0; d <= d1; d++) {
+          p += (d === d0 ? "M" : "L") + xS(d).toFixed(1) + " " + yS(dayLen(d)).toFixed(1) + " ";
+        }
+        return p.trim();
+      }
+
+      function areaPath(d0, d1) {
+        const base = yS(MIN_H);
+        let p = `M ${xS(d0).toFixed(1)} ${base} `;
+        for (let d = d0; d <= d1; d++) {
+          p += `L ${xS(d).toFixed(1)} ${yS(dayLen(d)).toFixed(1)} `;
+        }
+        p += `L ${xS(d1).toFixed(1)} ${base} Z`;
+        return p;
+      }
+
+      function svgBase() {
+        return `<svg viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg">`;
+      }
+
+      function axesAndGrid() {
+        let s = "";
+        // Subtle horizontal grid lines at hour marks
+        for (let h = 9; h <= 15; h += 3) {
+          const y = yS(h).toFixed(1);
+          s += `<line x1="${M.left}" y1="${y}" x2="${M.left + W}" y2="${y}" stroke="#ddd" stroke-width="1"/>`;
+          s += `<text x="${(M.left - 6).toFixed(1)}" y="${y}" text-anchor="end" dominant-baseline="middle" font-size="11" fill="#888" font-family="JetBrains Mono, monospace">${h}h</text>`;
+        }
+        // Month labels
+        months.forEach(m => {
+          const mid = m.start + 15;
+          const x = xS(mid).toFixed(1);
+          s += `<text x="${x}" y="${(M.top + H + 16).toFixed(1)}" text-anchor="middle" font-size="11" fill="#888" font-family="JetBrains Mono, monospace">${m.name}</text>`;
+        });
+        // Axes
+        s += `<line x1="${M.left}" y1="${M.top}" x2="${M.left}" y2="${(M.top + H).toFixed(1)}" stroke="#bbb" stroke-width="1"/>`;
+        s += `<line x1="${M.left}" y1="${(M.top + H).toFixed(1)}" x2="${(M.left + W).toFixed(1)}" y2="${(M.top + H).toFixed(1)}" stroke="#bbb" stroke-width="1"/>`;
+        return s;
+      }
+
+      // --- Diagram 1 ---
+      function buildDiagram1() {
+        const container = document.getElementById("diagram1-container");
+
+        let svg = svgBase();
+        svg += axesAndGrid();
+
+        // Key date vertical dashed lines + labels
+        keyDates.forEach((kd, i) => {
+          const x = xS(kd.day).toFixed(1);
+          const isAbove = (i === 1); // summer solstice label above
+          svg += `<line x1="${x}" y1="${M.top}" x2="${x}" y2="${(M.top + H).toFixed(1)}" stroke="#c22f04" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>`;
+
+          // Dot on the wave
+          const wy = yS(dayLen(kd.day)).toFixed(1);
+          svg += `<circle cx="${x}" cy="${wy}" r="4" fill="#c22f04"/>`;
+
+          // Labels — all at the same height
+          const dateY  = (M.top - 32).toFixed(1);
+          const labelY = (M.top - 19).toFixed(1);
+          svg += `<text x="${x}" y="${dateY}"  text-anchor="middle" font-size="10" fill="#c22f04" font-family="JetBrains Mono, monospace" opacity="0.7">${kd.date}</text>`;
+          svg += `<text x="${x}" y="${labelY}" text-anchor="middle" font-size="11" fill="#c22f04" font-family="JetBrains Mono, monospace">${kd.label}</text>`;
+        });
+
+        // Wave line
+        svg += `<path d="${wavePath(0, 364)}" fill="none" stroke="#333" stroke-width="2" stroke-linejoin="round"/>`;
+
+        // Hover overlay rect (invisible, for mouse events)
+        svg += `<rect id="d1-overlay" x="${M.left}" y="${M.top}" width="${W}" height="${H}" fill="transparent" style="cursor:crosshair"/>`;
+        svg += `<line id="d1-cursor" x1="0" y1="${M.top}" x2="0" y2="${(M.top + H)}" stroke="#999" stroke-width="1" stroke-dasharray="3 2" opacity="0" pointer-events="none"/>`;
+        svg += `<circle id="d1-dot" cx="0" cy="0" r="4" fill="#333" opacity="0" pointer-events="none"/>`;
+
+        svg += `</svg>`;
+        container.insertAdjacentHTML("afterbegin", svg);
+
+        const svgEl = container.querySelector("svg");
+        const overlay = svgEl.querySelector("#d1-overlay");
+        const cursor = svgEl.querySelector("#d1-cursor");
+        const dot = svgEl.querySelector("#d1-dot");
+        const tooltip = document.getElementById("tooltip1");
+
+        overlay.addEventListener("mousemove", e => {
+          const rect = svgEl.getBoundingClientRect();
+          const scaleX = VW / rect.width;
+          const svgX = (e.clientX - rect.left) * scaleX;
+          const day = Math.round(((svgX - M.left) / W) * (DAYS - 1));
+          if (day < 0 || day >= DAYS) return;
+
+          const h = dayLen(day);
+          const cx = xS(day).toFixed(1);
+          const cy = yS(h).toFixed(1);
+
+          cursor.setAttribute("x1", cx);
+          cursor.setAttribute("x2", cx);
+          cursor.setAttribute("opacity", "1");
+          dot.setAttribute("cx", cx);
+          dot.setAttribute("cy", cy);
+          dot.setAttribute("opacity", "1");
+
+          const date = dayToDate(day);
+          tooltip.textContent = `${date} · ${h.toFixed(1)}h daylight`;
+          tooltip.style.opacity = "1";
+          tooltip.style.left = (e.clientX + 12) + "px";
+          tooltip.style.top = (e.clientY - 28) + "px";
+        });
+
+        overlay.addEventListener("mouseleave", () => {
+          cursor.setAttribute("opacity", "0");
+          dot.setAttribute("opacity", "0");
+          tooltip.style.opacity = "0";
+        });
+      }
+
+      // --- Diagram 2 ---
+      const seasons = [
+        { name: "Spring", d0: 79,  d1: 171, color: "rgba(100,180,90,0.22)" },
+        { name: "Summer", d0: 171, d1: 265, color: "rgba(240,190,60,0.28)" },
+        { name: "Fall",   d0: 265, d1: 354, color: "rgba(200,100,50,0.25)" },
+        // Winter: two parts
+        { name: "Winter", d0: 354, d1: 364, color: "rgba(80,140,210,0.22)", winter: true },
+        { name: null,     d0: 0,   d1: 79,  color: "rgba(80,140,210,0.22)" },
+      ];
+
+      // Season label positions (midpoint day, label y near top)
+      const seasonLabels = [
+        { name: "Spring", midDay: 125 },
+        { name: "Summer", midDay: 218 },
+        { name: "Fall",   midDay: 309 },
+        { name: "Winter", midDay: 34 },
+      ];
+
+      function buildDiagram2() {
+        const container = document.getElementById("diagram2-container");
+
+        let svg = svgBase();
+
+        // Season fills (behind grid)
+        seasons.forEach(s => {
+          svg += `<path d="${areaPath(s.d0, s.d1)}" fill="${s.color}" stroke="none"/>`;
+        });
+
+        svg += axesAndGrid();
+
+        // Season name labels
+        seasonLabels.forEach(sl => {
+          const x = xS(sl.midDay).toFixed(1);
+          const y = (M.top - 9).toFixed(1);
+          svg += `<text x="${x}" y="${y}" text-anchor="middle" font-size="12" fill="rgba(0,0,0,0.45)" font-family="Nanum Myeongjo, serif" font-weight="700">${sl.name}</text>`;
+        });
+
+        // Key date dashed lines
+        keyDates.forEach(kd => {
+          const x = xS(kd.day).toFixed(1);
+          svg += `<line x1="${x}" y1="${M.top}" x2="${x}" y2="${(M.top + H).toFixed(1)}" stroke="#555" stroke-width="1" stroke-dasharray="4 3" opacity="0.3"/>`;
+        });
+
+        // Wave line
+        svg += `<path d="${wavePath(0, 364)}" fill="none" stroke="#333" stroke-width="2" stroke-linejoin="round"/>`;
+
+        // Hover overlay
+        svg += `<rect id="d2-overlay" x="${M.left}" y="${M.top}" width="${W}" height="${H}" fill="transparent" style="cursor:crosshair"/>`;
+        svg += `<line id="d2-cursor" x1="0" y1="${M.top}" x2="0" y2="${(M.top + H)}" stroke="#999" stroke-width="1" stroke-dasharray="3 2" opacity="0" pointer-events="none"/>`;
+        svg += `<circle id="d2-dot" cx="0" cy="0" r="4" fill="#333" opacity="0" pointer-events="none"/>`;
+
+        svg += `</svg>`;
+        container.insertAdjacentHTML("afterbegin", svg);
+
+        const svgEl = container.querySelector("svg");
+        const overlay = svgEl.querySelector("#d2-overlay");
+        const cursor = svgEl.querySelector("#d2-cursor");
+        const dot = svgEl.querySelector("#d2-dot");
+        const tooltip = document.getElementById("tooltip2");
+
+        overlay.addEventListener("mousemove", e => {
+          const rect = svgEl.getBoundingClientRect();
+          const scaleX = VW / rect.width;
+          const svgX = (e.clientX - rect.left) * scaleX;
+          const day = Math.round(((svgX - M.left) / W) * (DAYS - 1));
+          if (day < 0 || day >= DAYS) return;
+
+          const h = dayLen(day);
+          const cx = xS(day).toFixed(1);
+          const cy = yS(h).toFixed(1);
+
+          cursor.setAttribute("x1", cx);
+          cursor.setAttribute("x2", cx);
+          cursor.setAttribute("opacity", "1");
+          dot.setAttribute("cx", cx);
+          dot.setAttribute("cy", cy);
+          dot.setAttribute("opacity", "1");
+
+          const date = dayToDate(day);
+          tooltip.textContent = `${date} · ${h.toFixed(1)}h daylight`;
+          tooltip.style.opacity = "1";
+          tooltip.style.left = (e.clientX + 12) + "px";
+          tooltip.style.top = (e.clientY - 28) + "px";
+        });
+
+        overlay.addEventListener("mouseleave", () => {
+          cursor.setAttribute("opacity", "0");
+          dot.setAttribute("opacity", "0");
+          tooltip.style.opacity = "0";
+        });
+      }
+
+      // --- Helpers ---
+      const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      const monthDays = [31,28,31,30,31,30,31,31,30,31,30,31];
+
+      function dayToDate(day) {
+        let rem = day;
+        for (let i = 0; i < 12; i++) {
+          if (rem < monthDays[i]) return `${monthNames[i]} ${rem + 1}`;
+          rem -= monthDays[i];
+        }
+        return "Dec 31";
+      }
+
+      // --- Diagram 3: proposed calendar (solstice/equinox centered) ---
+      const seasons3 = [
+        { name: "Spring", d0: 52,  d1: 127, color: "rgba(100,180,90,0.22)" },
+        { name: "Summer", d0: 127, d1: 221, color: "rgba(240,190,60,0.28)" },
+        { name: "Fall",   d0: 221, d1: 310, color: "rgba(200,100,50,0.25)" },
+        { name: "Winter", d0: 310, d1: 364, color: "rgba(80,140,210,0.22)" },
+        { name: null,     d0: 0,   d1: 52,  color: "rgba(80,140,210,0.22)" },
+      ];
+
+      const seasonLabels3 = [
+        { name: "Spring", midDay: 89  },
+        { name: "Summer", midDay: 174 },
+        { name: "Fall",   midDay: 265 },
+      ];
+
+      function buildDiagram3() {
+        const container = document.getElementById("diagram3-container");
+
+        let svg = svgBase();
+
+        seasons3.forEach(s => {
+          svg += `<path d="${areaPath(s.d0, s.d1)}" fill="${s.color}" stroke="none"/>`;
+        });
+
+        svg += axesAndGrid();
+
+        // Key date vertical dashed lines + labels (same style as diagram 1)
+        keyDates.forEach((kd, i) => {
+          const x = xS(kd.day).toFixed(1);
+          svg += `<line x1="${x}" y1="${M.top}" x2="${x}" y2="${(M.top + H).toFixed(1)}" stroke="#c22f04" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>`;
+          const wy = yS(dayLen(kd.day)).toFixed(1);
+          svg += `<circle cx="${x}" cy="${wy}" r="4" fill="#c22f04"/>`;
+          const dateY  = (M.top - 32).toFixed(1);
+          const labelY = (M.top - 19).toFixed(1);
+          svg += `<text x="${x}" y="${dateY}"  text-anchor="middle" font-size="10" fill="#c22f04" font-family="JetBrains Mono, monospace" opacity="0.7">${kd.date}</text>`;
+          svg += `<text x="${x}" y="${labelY}" text-anchor="middle" font-size="11" fill="#c22f04" font-family="JetBrains Mono, monospace">${kd.label}</text>`;
+        });
+
+        // Season labels below the wave, near the bottom of the chart
+        seasonLabels3.forEach(sl => {
+          const x = xS(sl.midDay).toFixed(1);
+          const y = (M.top + H - 14).toFixed(1);
+          svg += `<text x="${x}" y="${y}" text-anchor="middle" font-size="12" fill="rgba(0,0,0,0.45)" font-family="Nanum Myeongjo, serif" font-weight="700">${sl.name}</text>`;
+        });
+
+        svg += `<path d="${wavePath(0, 364)}" fill="none" stroke="#333" stroke-width="2" stroke-linejoin="round"/>`;
+
+        svg += `<rect id="d3-overlay" x="${M.left}" y="${M.top}" width="${W}" height="${H}" fill="transparent" style="cursor:crosshair"/>`;
+        svg += `<line id="d3-cursor" x1="0" y1="${M.top}" x2="0" y2="${(M.top + H)}" stroke="#999" stroke-width="1" stroke-dasharray="3 2" opacity="0" pointer-events="none"/>`;
+        svg += `<circle id="d3-dot" cx="0" cy="0" r="4" fill="#333" opacity="0" pointer-events="none"/>`;
+
+        svg += `</svg>`;
+        container.insertAdjacentHTML("afterbegin", svg);
+
+        const svgEl = container.querySelector("svg");
+        const overlay = svgEl.querySelector("#d3-overlay");
+        const cursor = svgEl.querySelector("#d3-cursor");
+        const dot = svgEl.querySelector("#d3-dot");
+        const tooltip = document.getElementById("tooltip3");
+
+        overlay.addEventListener("mousemove", e => {
+          const rect = svgEl.getBoundingClientRect();
+          const scaleX = VW / rect.width;
+          const svgX = (e.clientX - rect.left) * scaleX;
+          const day = Math.round(((svgX - M.left) / W) * (DAYS - 1));
+          if (day < 0 || day >= DAYS) return;
+
+          const h = dayLen(day);
+          const cx = xS(day).toFixed(1);
+          const cy = yS(h).toFixed(1);
+
+          cursor.setAttribute("x1", cx);
+          cursor.setAttribute("x2", cx);
+          cursor.setAttribute("opacity", "1");
+          dot.setAttribute("cx", cx);
+          dot.setAttribute("cy", cy);
+          dot.setAttribute("opacity", "1");
+
+          const date = dayToDate(day);
+          tooltip.textContent = `${date} · ${h.toFixed(1)}h daylight`;
+          tooltip.style.opacity = "1";
+          tooltip.style.left = (e.clientX + 12) + "px";
+          tooltip.style.top = (e.clientY - 28) + "px";
+        });
+
+        overlay.addEventListener("mouseleave", () => {
+          cursor.setAttribute("opacity", "0");
+          dot.setAttribute("opacity", "0");
+          tooltip.style.opacity = "0";
+        });
+      }
+
+      buildDiagram1();
+      buildDiagram2();
+      buildDiagram3();
+    </script>
+  </body>
+</html>
