@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8" />
+    <title>On filing the corners off my MacBook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../../favicon.png" />
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <link rel="stylesheet" href="../../css/post.css" />
+    <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Nanum+Myeongjo:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .photo-gallery {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: var(--space-lg) 0;
+      }
+
+      .photo-gallery img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        display: block;
+        border-radius: 2px;
+      }
+
+      .photo-gallery img:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        max-width: calc(50% - 4px);
+        justify-self: center;
+      }
+
+      .photo-gallery img {
+        cursor: pointer;
+      }
+
+      .lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.88);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .lightbox.open {
+        display: flex;
+      }
+
+      .lightbox img {
+        max-width: calc(100vw - 32px);
+        max-height: calc(100vh - 32px);
+        object-fit: contain;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <article class="post">
+      <a href="../../index.html" class="back-link">← Back</a>
+      <h1>On filing the corners off my MacBooks</h1>
+      <p class="post-date">April 2026</p>
+
+      <p>I file the sharp corners off my MacBooks. People like to freak out about this, so I wanted to post it here to make sure that everyone who wants to freak out about it gets the opportunity to do so.</p>
+
+      <p>Here are some photos so you know what I'm talking about:</p>
+
+      <div class="photo-gallery">
+        <img src="imgs/IMG_0796.jpeg" alt="MacBook corner after filing" />
+        <img src="imgs/IMG_0797.jpeg" alt="MacBook corner after filing" />
+        <img src="imgs/IMG_0798.jpeg" alt="MacBook corner after filing" />
+        <img src="imgs/IMG_0799.jpeg" alt="MacBook corner after filing" />
+        <img src="imgs/IMG_0801.jpeg" alt="MacBook corner after filing" />
+      </div>
+
+      <p>The bottom edge of the MacBook is very sharp. Indeed, the industrial designers at Apple chose an aluminum unibody partly for the fact that it <em>can</em> handle such a geometry. But, it is uncomfortable on my wrists, and I believe strongly in customizing our tools, so I filed it off.</p>
+
+      <p>The corner is sharp all around the machine, but it's particularly pointed at the notch, which is where I focused my effort. It was quite pleasing to blend the smaller radius curves into the larger radius notch curve. I was slightly concerned that I'd file <em>through</em> the machine, so I did this in increments. It didn't end up being an issue.</p>
+
+      <p>I taped off the speakers and keyboard while filing, as I'm sure aluminum dust wouldn't do the machine any favors. I also clamped (with a respectful pressure) the machine to my workbench while doing this. I used a fairly rough file, as that is what I had on hand, and then sanded with 150 then 400 grit sandpaper. I was quite pleased with the finish. The photos above are taken months after, and have the scratches and dings that you'd expect someone who has this level of respect for their machine to acquire over that amount of time.</p>
+
+      <p>This was on my work computer. I expect to similarly modify future work computers, and I would be happy to help you modify yours if you need a little encouragement. Don't be scared. Fuck around a bit. </p>
+    </article>
+
+    <div class="lightbox" id="lightbox">
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+
+    <script>
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+
+      document.querySelectorAll(".photo-gallery img").forEach(img => {
+        img.addEventListener("click", () => {
+          lightboxImg.src = img.src;
+          lightboxImg.alt = img.alt;
+          lightbox.classList.add("open");
+        });
+      });
+
+      lightbox.addEventListener("click", () => {
+        lightbox.classList.remove("open");
+      });
+
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape") lightbox.classList.remove("open");
+      });
+    </script>
+  </body>
+</html>
