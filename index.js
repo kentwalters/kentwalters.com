@@ -11,6 +11,7 @@ let lastFrameTime = Date.now();
 let frameCount = 0;
 let fps = 0;
 let canvas, ctx;
+let viewWidth, viewHeight;
 let grid = [];
 const universe = [];
 let lastUpdateTime = 0;
@@ -45,9 +46,9 @@ class Ball {
 
 const setupGrid = () => {
   grid = [];
-  for (let i = 0; i < Math.ceil(canvas.width / GRID_SIZE); i++) {
+  for (let i = 0; i < Math.ceil(viewWidth / GRID_SIZE); i++) {
     grid[i] = [];
-    for (let j = 0; j < Math.ceil(canvas.height / GRID_SIZE); j++) {
+    for (let j = 0; j < Math.ceil(viewHeight / GRID_SIZE); j++) {
       grid[i][j] = [];
     }
   }
@@ -63,9 +64,19 @@ const clearGrid = () => {
 
 const initializeCanvas = () => {
   canvas = document.getElementById("canvas");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
   ctx = canvas.getContext("2d");
+  sizeCanvas();
+};
+
+const sizeCanvas = () => {
+  const dpr = window.devicePixelRatio || 1;
+  viewWidth = window.innerWidth;
+  viewHeight = window.innerHeight;
+  canvas.width = viewWidth * dpr;
+  canvas.height = viewHeight * dpr;
+  canvas.style.width = `${viewWidth}px`;
+  canvas.style.height = `${viewHeight}px`;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 };
 
 const configureDOMElements = () => {
@@ -96,8 +107,8 @@ const setupEventListeners = () => {
     if (!controlHovered) {
       // controlHovered = true;
       const fakeEvent = {
-        clientX: Math.random() * canvas.width,
-        clientY: Math.random() * canvas.height
+        clientX: Math.random() * viewWidth,
+        clientY: Math.random() * viewHeight
       };
       placeCircleOrSquare(fakeEvent);
     }
@@ -281,8 +292,7 @@ const handleCollision = (ball1, ball2) => {
 };
 
 const resizeCanvas = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  sizeCanvas();
   updateControlDivBounds();
   setupGrid();
 };
@@ -303,15 +313,15 @@ const move = (deltaTime) => {
     let newY = object.yPos + distance * Math.sin(object.vector.direction);
 
     // Wall collision detection and response
-    if (newX < 0 || newX > canvas.width - BALL_DIAMETER) {
+    if (newX < 0 || newX > viewWidth - BALL_DIAMETER) {
       object.vector.direction = Math.PI - object.vector.direction;
       object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS;
-      newX = Math.max(0, Math.min(newX, canvas.width - BALL_DIAMETER)); // Constrain within bounds
+      newX = Math.max(0, Math.min(newX, viewWidth - BALL_DIAMETER)); // Constrain within bounds
     }
-    if (newY < 0 || newY > canvas.height - BALL_DIAMETER) {
+    if (newY < 0 || newY > viewHeight - BALL_DIAMETER) {
       object.vector.direction = -object.vector.direction;
       object.vector.velocity *= 1 - COLLISION_ENERGY_LOSS;
-      newY = Math.max(0, Math.min(newY, canvas.height - BALL_DIAMETER)); // Constrain within bounds
+      newY = Math.max(0, Math.min(newY, viewHeight - BALL_DIAMETER)); // Constrain within bounds
     }
 
     // if (object.xPos < controlDivBounds.left || object.xPos > controlDivBounds.right - BALL_DIAMETER) {
@@ -354,7 +364,7 @@ const move = (deltaTime) => {
 };
 
 const render = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, viewWidth, viewHeight);
   for (let ob of universe) {
     ctx.beginPath();
     ctx.arc(
